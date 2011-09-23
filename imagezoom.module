@@ -115,7 +115,6 @@ function imagezoom_theme() {
  */
 function theme_imagezoom_image($variables) {
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
-  drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
 
   $image = array(
     'path' => $variables['item']['uri'],
