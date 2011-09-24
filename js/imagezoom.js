@@ -2,7 +2,7 @@
 
   Drupal.behaviors.zoomimage = {
     attach: function() {
-      $('a.imagezoom').mouseenter(function(e) { show($(this).attr('href')); });
+      $('a.imagezoom').mouseenter(function(e) { show($(this)); });
       $('a.imagezoom').mouseleave(function(e) { hide(); });
       $('a.imagezoom').mousemove(function(e) { move(e, $(this)); });
 
@@ -12,14 +12,15 @@
       var borderWidth = 5;
       var borderColor = '#000';
       var bgColor = '#fff';
-      var zoomWindowX = 750;
-      var zoomWindowY = 50;
+      var zoomWindowX = 0;
+      var zoomWindowY = 0;
 
-      function show(src) {
+      function show(obj) {
         var zoom_img_wrapper = $('<div/>', { id: 'zoom-img-wrapper' });
-        var zoom_img = $('<img/>', { src: src, id: 'zoom-img' });
-        zoom_img_wrapper.appendTo('body');
+        var zoom_img = $('<img/>', { src: obj.attr('href'), id: 'zoom-img' });
+        zoom_img_wrapper.appendTo(obj.parent());
         zoom_img.appendTo('#zoom-img-wrapper');
+        zoomWindowX = obj.width() + 20;
 
         $('#zoom-img-wrapper').css({
           'position': 'absolute',
