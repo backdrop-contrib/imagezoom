@@ -99,6 +99,7 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
   $display_style = $display['settings']['imagezoom_display_style'];
   $zoom_style = $display['settings']['imagezoom_zoom_style'];
 
+  $element = array();
   foreach ($items as $delta => $item) {
     $element[$delta] = array(
       '#theme' => 'imagezoom_image',
