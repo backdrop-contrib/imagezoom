@@ -7,11 +7,11 @@
       $('a.imagezoom').mousemove(function(e) { move(e, $(this)); });
 
       // set variables
-      var zoomWindowW = 600;
-      var zoomWindowH = 400;
-      var borderWidth = 5;
-      var borderColor = '#000';
-      var bgColor = '#fff';
+      var zoomWindowW = Drupal.settings.imagezoom.window_w;
+      var zoomWindowH = Drupal.settings.imagezoom.window_h;
+      var borderWidth = Drupal.settings.imagezoom.border_width;
+      var borderColor = Drupal.settings.imagezoom.border_color;
+      var bgColor = Drupal.settings.imagezoom.background_color;
       var zoomWindowX = 0;
       var zoomWindowY = 0;
 
