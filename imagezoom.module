@@ -21,7 +21,7 @@ function imagezoom_menu() {
  */
 function imagezoom_field_formatter_info() {
   $formatters = array(
-    'image' => array(
+    'imagezoom' => array(
       'label' => t('Image Zoom'),
       'field types' => array('image'),
       'settings' => array(
