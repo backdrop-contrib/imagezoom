@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * @file
+ * Provides an Imaze Zoom field formatter for Image fields.
+ *
+ * This module provides a field formatter that allows users to specify an image style to display, and
+ * another image style to use as the zoomed version of the image. Hovering the mouse over the
+ * image will display the zoomed version, which shifts with mouse movement.
+ */
+
+/**
  * Implements hook_field_formatter().
  */
 function imagezoom_field_formatter_info() {
@@ -57,8 +66,7 @@ function imagezoom_field_formatter_settings_summary($field, $instance, $view_mod
   $image_styles = image_style_options(FALSE);
   // Unset possible 'No defined styles' option.
   unset($image_styles['']);
-  // Styles could be lost because of enabled/disabled modules that defines
-  // their styles in code.
+  // Styles could be lost because of enabled/disabled modules that define their styles in code.
   if (isset($image_styles[$settings['imagezoom_display_style']])) {
     $summary[] = t('Display image style: @style', array('@style' => $image_styles[$settings['imagezoom_display_style']]));
   }
@@ -112,7 +120,7 @@ function imagezoom_theme() {
 }
 
 /**
- * Theme function for imagezoom_image
+ * Returns the HTML code for an image with a zoomed version on mouseover.
  */
 function theme_imagezoom_image($variables) {
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
