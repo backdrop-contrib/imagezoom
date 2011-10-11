@@ -1,22 +1,6 @@
 <?php
 
 /**
- * Implements hook_menu().
- */
-function imagezoom_menu() {
-  $items['admin/config/media/imagezoom'] = array(
-    'title' => 'Image Zoom',
-    'description' => 'Configure settings for the Image Zoom field formatter.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('imagezoom_settings_form'),
-    'access arguments' => array('administer image styles'),
-    'file' => 'imagezoom.admin.inc',
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_field_formatter().
  */
 function imagezoom_field_formatter_info() {
@@ -131,9 +115,8 @@ function imagezoom_theme() {
  * Theme function for imagezoom_image
  */
 function theme_imagezoom_image($variables) {
-  $settings = variable_get('imagezoom_settings', array());
-  drupal_add_js(array('imagezoom' => $settings), 'setting');
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
+  drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
 
   $image = array(
     'path' => $variables['item']['uri'],

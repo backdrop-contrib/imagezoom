@@ -2,49 +2,24 @@
 
   Drupal.behaviors.zoomimage = {
     attach: function() {
-      $('a.imagezoom').mouseenter(function(e) { show($(this)); });
-      $('a.imagezoom').mouseleave(function(e) { hide(); });
-      $('a.imagezoom').mousemove(function(e) { move(e, $(this)); });
+      $('a.imagezoom').mouseenter(function(e) { zoom($(this)); });
+      $('a.imagezoom').mouseleave(function(e) { reset(); });
+      $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
 
-      // set variables
-      var zoomWindowW = Drupal.settings.imagezoom.window_w;
-      var zoomWindowH = Drupal.settings.imagezoom.window_h;
-      var borderWidth = Drupal.settings.imagezoom.border_width;
-      var borderColor = Drupal.settings.imagezoom.border_color;
-      var bgColor = Drupal.settings.imagezoom.background_color;
-      var zoomWindowX = 0;
-      var zoomWindowY = 0;
-
-      function show(obj) {
+      function zoom(obj) {
         var zoom_img_wrapper = $('<div/>', { id: 'zoom-img-wrapper' });
         var zoom_img = $('<img/>', { src: obj.attr('href'), id: 'zoom-img' });
         zoom_img_wrapper.appendTo(obj.parent());
         zoom_img.appendTo('#zoom-img-wrapper');
-        zoomWindowX = obj.width() + 20;
 
-        $('#zoom-img-wrapper').css({
-          'position': 'absolute',
-          'top': zoomWindowY + 'px',
-          'left': zoomWindowX + 'px',
-          'overflow': 'hidden',
-          'width': zoomWindowW + 'px',
-          'height': zoomWindowH + 'px',
-          'border': borderWidth + 'px solid ' + borderColor,
-          'background-color': bgColor
-        });
-
-        $('#zoom-img').css({
-          'position': 'absolute',
-          'top': '0px',
-          'left': '0px'
-        });
+        $('#zoom-img-wrapper').parent('div').css('position', 'relative');
       }
 
-      function hide() {
+      function reset() {
         $('#zoom-img-wrapper').remove();
       }
 
-      function move(e, obj) {
+      function shift(e, obj) {
         var image = obj.children('img');
         var zoomImage = $('#zoom-img');
 
