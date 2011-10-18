@@ -14,3 +14,7 @@ img#zoom-img {
   top: 0px;
   left: 0px;
 }
+
+a.imagezoom {
+  cursor: crosshair;
+}

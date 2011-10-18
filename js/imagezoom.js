@@ -9,6 +9,7 @@
       $('a.imagezoom').mouseenter(function(e) { zoom($(this)); });
       $('a.imagezoom').mouseleave(function(e) { reset(); });
       $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
+      $('a.imagezoom').click(function(e) { e.preventDefault(); });
 
       /**
        * Create the zoomed image, and adds it to the page.
