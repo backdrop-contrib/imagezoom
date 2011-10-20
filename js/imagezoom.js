@@ -10,6 +10,7 @@
       $('a.imagezoom').mouseleave(function(e) { reset(); });
       $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
       $('a.imagezoom').click(function(e) { e.preventDefault(); });
+      $('a.imagezoom-thumb').click(function(e) { swap(e, $(this)); });
 
       /**
        * Create the zoomed image, and adds it to the page.
@@ -73,6 +74,22 @@
         // set the new X and Y positions
         $('#zoom-img').css('left', (posX * -1) + 'px');
         $('#zoom-img').css('top', (posY * -1) + 'px');
+      }
+      
+      /**
+       * Swaps thumbnails with the main image.
+       *
+       * @param e
+       *   The jQuery eventObject.
+       * @param obj
+       *   The object that the mouse is hovering over.
+       */
+      function swap(e, obj) {
+        e.preventDefault();
+        
+        var mainImage = $('a.imagezoom img');
+        alert(obj.children('img').attr('src'));
+        //console.log(o
       }
     }
   }
