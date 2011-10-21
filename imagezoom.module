@@ -272,7 +272,7 @@ function theme_imagezoom_image_multiple($variables) {
   ));
   $output .= '</div>';
 
-  $output .= '<div id="imagezoom-thumb-wrapper">';
+  $output .= '<div id="imagezoom-thumb-wrapper" class="clearfix">';
   foreach ($items as $key => $item) {
     $image = array(
       'path' => $item['uri'],
