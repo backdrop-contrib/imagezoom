@@ -120,7 +120,8 @@ function imagezoom_field_formatter_settings_summary($field, $instance, $view_mod
 function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $display_style = $display['settings']['imagezoom_display_style'];
   $zoom_style = $display['settings']['imagezoom_zoom_style'];
-  $thumb_style = $display['settings']['imagezoom_thumb_style'];
+  $thumb_style = isset($display['settings']['imagezoom_thumb_style']) ?
+    $display['settings']['imagezoom_thumb_style'] : NULL;
 
   $element = array();
   if (count($items > 1)) {
