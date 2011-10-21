@@ -118,11 +118,15 @@
         $('a.imagezoom img').attr('src', newMainSrc);
         $('a.imagezoom').attr('href', newZoomSrc);
 
-        // swap hide and active classes
-        $('div.imagezoom-thumb.imagezoom-thumb-hide').removeClass('imagezoom-thumb-hide');
+        // swap active class
         $('div.imagezoom-thumb.active').removeClass('active');
-        obj.parent('div').addClass('imagezoom-thumb-hide');
         obj.addClass('active');
+        
+        // swap hide class if we want to
+        if (Drupal.settings.imagezoom.hide_thumbs == 1) {
+          $('div.imagezoom-thumb.imagezoom-thumb-hide').removeClass('imagezoom-thumb-hide');
+          obj.parent('div').addClass('imagezoom-thumb-hide');
+        }
       }
     }
   }

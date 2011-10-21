@@ -2,13 +2,29 @@
 
 /**
  * @file
- * Provides an Imaze Zoom field formatter for Image fields.
+ * Provides an Image Zoom field formatter for Image fields.
  *
  * This module provides a field formatter that allows users to specify an image
  * style to display, and another image style to use as the zoomed version of the
  * image. Hovering the mouse over the image will display the zoomed version,
  * which shifts with mouse movement.
  */
+
+/**
+ * Implements hook_menu().
+ */
+function imagezoom_menu() {
+  $items['admin/config/media/imagezoom'] = array(
+    'title' => 'Image Zoom',
+    'description' => 'Configure settings for the Image Zoom field formatter.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('imagezoom_settings_form'),
+    'access arguments' => array('Administer image styles'),
+    'file' => 'imagezoom.admin.inc',
+  );
+
+  return $items;
+}
 
 /**
  * Implements hook_field_formatter().
@@ -21,7 +37,6 @@ function imagezoom_field_formatter_info() {
       'settings' => array(
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
-        'imagezoom_multiple_thumbs' => '',
         'imagezoom_thumb_style' => '',
       ),
     ),
@@ -54,20 +69,15 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
     '#default_value' => $settings['imagezoom_zoom_style'],
   );
 
-  $element['imagezoom_multiple_thumbs'] = array(
-    '#type' => 'radios',
-    '#title' => t('Display multiple images as thumbnails?'),
-    '#options' => array(t('No'), t('Yes')),
-    '#default_value' => $settings['imagezoom_multiple_thumbs'],
-  );
-
-  $element['imagezoom_thumb_style'] = array(
-    '#type' => 'select',
-    '#title' => t('Thumbnail image style'),
-    '#options' => $image_styles,
-    '#empty_option' => t('None (original image)'),
-    '#default_value' => $settings['imagezoom_thumb_style'],
-  );
+  if (variable_get('imagezoom_multiple_thumbs', 0)) {
+    $element['imagezoom_thumb_style'] = array(
+      '#type' => 'select',
+      '#title' => t('Thumbnail image style'),
+      '#options' => $image_styles,
+      '#empty_option' => t('None (original image)'),
+      '#default_value' => $settings['imagezoom_thumb_style'],
+    );
+  }
 
   return $element;
 }
@@ -94,13 +104,12 @@ function imagezoom_field_formatter_settings_summary($field, $instance, $view_mod
     '@style' => isset($image_styles[$settings['imagezoom_zoom_style']]) ?
     $image_styles[$settings['imagezoom_zoom_style']] : 'original',
   ));
-  $summary[] = t('Display multiple images as thumbnails: @multiple', array(
-    '@multiple' => $settings['imagezoom_multiple_thumbs'] ? 'Yes' : 'No',
-  ));
-  $summary[] = t('Thumbnail image style: @style', array(
-    '@style' => isset($image_styles[$settings['imagezoom_thumb_style']]) ?
-    $image_styles[$settings['imagezoom_thumb_style']] : 'original',
-  ));
+  if (variable_get('imagezoom_multiple_thumbs', 0)) {
+    $summary[] = t('Thumbnail image style: @style', array(
+      '@style' => isset($image_styles[$settings['imagezoom_thumb_style']]) ?
+      $image_styles[$settings['imagezoom_thumb_style']] : 'original',
+    ));
+  }
 
   return implode('<br />', $summary);
 }
@@ -115,7 +124,7 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
 
   $element = array();
   if (count($items > 1)) {
-    if ($display['settings']['imagezoom_multiple_thumbs']) {
+    if (variable_get('imagezoom_multiple_thumbs', 0)) {
       $element = array(
         '#theme' => 'imagezoom_image_multiple',
         '#items' => $items,
@@ -219,7 +228,9 @@ function theme_imagezoom_image($variables) {
  * Returns the HTML code for an image with a zoomed version on mouseover.
  */
 function theme_imagezoom_image_multiple($variables) {
+  $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
+  drupal_add_js(array('imagezoom' => array('hide_thumbs' => $hide_thumbs)), 'setting');
   drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
 
   $items = $variables['items'];
@@ -285,7 +296,9 @@ function theme_imagezoom_image_multiple($variables) {
     $hide = '';
     if ($key == 0) {
       $classes[] = 'active';
-      $hide = ' imagezoom-thumb-hide';
+      if ($hide_thumbs) {
+        $hide = ' imagezoom-thumb-hide';
+      }
     }
 
     $thumb = l($thumb, 'swap', array(
