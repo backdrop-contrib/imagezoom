@@ -4,9 +4,9 @@
  * @file
  * Provides an Imaze Zoom field formatter for Image fields.
  *
- * This module provides a field formatter that allows users to specify an image 
+ * This module provides a field formatter that allows users to specify an image
  * style to display, and another image style to use as the zoomed version of the
- * image. Hovering the mouse over the image will display the zoomed version, 
+ * image. Hovering the mouse over the image will display the zoomed version,
  * which shifts with mouse movement.
  */
 
@@ -53,14 +53,14 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
     '#empty_option' => t('None (original image)'),
     '#default_value' => $settings['imagezoom_zoom_style'],
   );
-  
+
   $element['imagezoom_multiple_thumbs'] = array(
     '#type' => 'radios',
     '#title' => t('Display multiple images as thumbnails?'),
     '#options' => array(t('No'), t('Yes')),
     '#default_value' => $settings['imagezoom_multiple_thumbs'],
   );
-  
+
   $element['imagezoom_thumb_style'] = array(
     '#type' => 'select',
     '#title' => t('Thumbnail image style'),
@@ -68,7 +68,7 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
     '#empty_option' => t('None (original image)'),
     '#default_value' => $settings['imagezoom_thumb_style'],
   );
-  
+
   return $element;
 }
 
@@ -87,7 +87,7 @@ function imagezoom_field_formatter_settings_summary($field, $instance, $view_mod
   // Styles could be lost because of enabled/disabled modules that define
   // their styles in code.
   $summary[] = t('Display image style: @style', array(
-    '@style' => isset($image_styles[$settings['imagezoom_display_style']]) ? 
+    '@style' => isset($image_styles[$settings['imagezoom_display_style']]) ?
     $image_styles[$settings['imagezoom_display_style']] : 'original',
   ));
   $summary[] = t('Zoomed image style: @style', array(
@@ -176,7 +176,7 @@ function imagezoom_theme() {
 function theme_imagezoom_image($variables) {
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
   drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
-  
+
   $item = $variables['item'];
 
   $image = array(
@@ -211,7 +211,7 @@ function theme_imagezoom_image($variables) {
     'html' => TRUE,
     'attributes' => array('class' => 'imagezoom'),
   ));
-  
+
   return $output;
 }
 
@@ -221,7 +221,7 @@ function theme_imagezoom_image($variables) {
 function theme_imagezoom_image_multiple($variables) {
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
   drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
-  
+
   $items = $variables['items'];
   $output = '';
 
@@ -243,7 +243,7 @@ function theme_imagezoom_image_multiple($variables) {
   else {
     $main_img = theme('image', $image);
   }
- 
+
   $zoom_img = '';
   if ($variables['zoom_style']) {
     $image['style_name'] = $variables['zoom_style'];
@@ -261,15 +261,15 @@ function theme_imagezoom_image_multiple($variables) {
   $output .= '</div>';
 
   $output .= '<div id="imagezoom-thumb-wrapper">';
-  for ($i = 1; $i < count($items); $i++) {
+  foreach ($items as $key => $item) {
     $image = array(
-      'path' => $items[$i]['uri'],
-      'alt' => $items[$i]['alt'],
+      'path' => $item['uri'],
+      'alt' => $item['alt'],
     );
 
     // Do not output an empty 'title' attribute.
-    if (drupal_strlen($items[$i]['title']) > 0) {
-      $image['title'] = $items[$i]['title'];
+    if (drupal_strlen($item['title']) > 0) {
+      $image['title'] = $item['title'];
     }
 
     $thumb = '';
@@ -281,11 +281,19 @@ function theme_imagezoom_image_multiple($variables) {
       $thumb = theme('image', $image);
     }
 
+    $classes = array('imagezoom-thumb-image');
+    $hide = '';
+    if ($key == 0) {
+      $classes[] = 'active';
+      $hide = ' imagezoom-thumb-hide';
+    }
+
     $thumb = l($thumb, 'swap', array(
       'html' => TRUE,
-      'attributes' => array('class' => 'imagezoom-thumb'),
+      'attributes' => array('class' => $classes),
     ));
-    $output .= '<div class="imagezoom-thumb">' . $thumb . '</div>';
+
+    $output .= '<div class="imagezoom-thumb' . $hide . '">' . $thumb . '</div>';
   }
   $output .= '</div>';
 

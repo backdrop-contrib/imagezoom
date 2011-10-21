@@ -24,3 +24,7 @@ a.imagezoom {
   float: left;
   padding: 5px 5px 0px 0px;
 }
+
+#imagezoom-thumb-wrapper .imagezoom-thumb-hide {
+  display: none;
+}
