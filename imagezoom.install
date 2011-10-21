@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Provides uninstall functions for the Image Zoom module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function imagezoom_uninstall() {
+  // delete variables created by settings form
+  variable_del('imagezoom_multiple_thumbs');
+  variable_del('imagezoom_hide_active_thumb');
+}
