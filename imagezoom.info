@@ -1,5 +1,6 @@
 name = Image Zoom
 description = Provides an field formatter to zoom an image while hovering over it.
 core = 7.x
+configure = admin/config/media/imagezoom
 
 dependencies[] = image
