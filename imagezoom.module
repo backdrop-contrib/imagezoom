@@ -231,7 +231,11 @@ function theme_imagezoom_image($variables) {
 function theme_imagezoom_image_multiple($variables) {
   $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
-  drupal_add_js(array('imagezoom' => array('hide_thumbs' => $hide_thumbs)), 'setting');
+  $settings = array(
+    'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
+    'hide_thumbs' => $hide_thumbs,
+  );
+  drupal_add_js(array('imagezoom' => $settings), 'setting');
   drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
 
   $items = $variables['items'];

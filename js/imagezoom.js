@@ -6,32 +6,75 @@
    */
   Drupal.behaviors.zoomimage = {
     attach: function() {
-      $('a.imagezoom').mouseenter(function(e) { zoom($(this)); });
-      $('a.imagezoom').mouseleave(function(e) { reset(); });
-      $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
       $('a.imagezoom').click(function(e) { e.preventDefault(); });
       $('a.imagezoom-thumb-image').click(function(e) { swap(e, $(this)); });
 
+      switch (Drupal.settings.imagezoom.zoom_type) {
+        case 'popup':
+          $('a.imagezoom').mouseenter(function(e) { zoom_popup($(this)); });
+          $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
+          $('a.imagezoom').mouseleave(function(e) { reset(); });
+          break;
+        case 'inner':
+          $('a.imagezoom').mouseenter(function(e) { zoom_inner($(this)); });
+          $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
+          $('a.imagezoom').mouseleave(function(e) { reset(); });
+          break;
+      }
+
       /**
-       * Create the zoomed image, and adds it to the page.
+       * Creates the zoomed image popup, and adds it to the page.
        *
        * @param obj
        *   The object that the mouse is hovering over.
        */
-      function zoom(obj) {
-        var zoom_img_wrapper, zoom_img;
+      function zoom_popup(obj) {
+        var zoomImageWrapper, zoomImage;
 
         // create div to put zoomed image in
-        zoom_img_wrapper = $('<div/>', { id: 'zoom-img-wrapper' });
+        zoomImageWrapper = $('<div/>', { id: 'zoom-img-wrapper', class: 'popup' });
         // create zoomed image
-        zoom_img = $('<img/>', { src: obj.attr('href'), id: 'zoom-img' });
+        zoomImage = $('<img/>', { src: obj.attr('href'), id: 'zoom-img' });
         // add the image wrapper div to its parent
-        zoom_img_wrapper.appendTo(obj.parent());
+        zoomImageWrapper.appendTo(obj.parent());
         // add the zoomed image to the wrapper div
-        zoom_img.appendTo('#zoom-img-wrapper');
+        zoomImage.appendTo('#zoom-img-wrapper');
 
         // set the parent of the wrapper div to relative positioning.
         $('#zoom-img-wrapper').parent('div').css('position', 'relative');
+      }
+
+      /**
+       * Creates the zoomed image, and adds it to the page.
+       *
+       * @param obj
+       *   The object that the mouse is hovering over.
+       */
+      function zoom_inner(obj) {
+        var image, zoomImageWrapper, zoomImage;
+
+        // get the displayed image
+        image = obj.children('img');
+
+        // add css styles for the a tag that contains the zoom
+        obj.css({
+          'position': 'relative',
+          'display': 'block',
+          'height': image.height(),
+          'width': image.width()
+        });
+
+        // create div to put zoomed image in and set dimensions
+        zoomImageWrapper = $('<div/>', { id: 'zoom-img-wrapper', class: 'inner' });
+        zoomImageWrapper.css({'height': image.height(), 'width': image.width()});
+
+        // create zoomed image
+        zoomImage = $('<img/>', { src: obj.attr('href'), id: 'zoom-img' });
+
+        // add the image wrapper div to the a tag
+        zoomImageWrapper.appendTo(obj);
+        // add the zoomed image to the wrapper div
+        zoomImage.appendTo('#zoom-img-wrapper');
       }
 
       /**
@@ -68,7 +111,7 @@
         posY = mouseY * ratioY;
 
         // make sure the new X and Y positions are within the boundaries 
-        // of the image
+        // of the image if using the popup
         if (posX > zoomImage.width()) {
           posX = zoomImage.width();
         }

@@ -6,6 +6,16 @@
  */
 
 function imagezoom_settings_form() {
+  $form['imagezoom_zoom_type'] = array(
+    '#type' => 'radios',
+    '#title' => t('What style zoom should be used?'),
+    '#options' => array(
+      'popup' => t('Popup window'),
+      'inner' => t('Inner zoom'),
+    ),
+    '#default_value' => variable_get('imagezoom_zoom_type', 'popup'),
+  );
+
   $form['imagezoom_multiple_thumbs'] = array(
     '#type' => 'radios',
     '#title' => t('Display multiple images as thumbnails?'),
