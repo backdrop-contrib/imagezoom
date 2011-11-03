@@ -184,7 +184,7 @@ function imagezoom_theme() {
  * Returns the HTML code for an image with a zoomed version on mouseover.
  */
 function theme_imagezoom_image($variables) {
-  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
+  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
   drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
 
   $item = $variables['item'];
@@ -230,7 +230,7 @@ function theme_imagezoom_image($variables) {
  */
 function theme_imagezoom_image_multiple($variables) {
   $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
-  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
+  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
   $settings = array(
     'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
     'hide_thumbs' => $hide_thumbs,
