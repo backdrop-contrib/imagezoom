@@ -184,14 +184,16 @@ function imagezoom_theme() {
  * Returns the HTML code for an image with a zoomed version on mouseover.
  */
 function theme_imagezoom_image($variables) {
-  $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
-  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
-  $settings = array(
-    'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
-    'hide_thumbs' => $hide_thumbs,
-  );
-  drupal_add_js(array('imagezoom' => $settings), 'setting');
-  drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
+  if (!variable_get('imagezoom_load_all', 0)) {
+    $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
+    drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
+    $settings = array(
+      'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
+      'hide_thumbs' => $hide_thumbs,
+    );
+    drupal_add_js(array('imagezoom' => $settings), 'setting');
+    drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
+  }
 
   $item = $variables['item'];
 
@@ -235,14 +237,16 @@ function theme_imagezoom_image($variables) {
  * Returns the HTML code for an image with a zoomed version on mouseover.
  */
 function theme_imagezoom_image_multiple($variables) {
-  $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
-  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
-  $settings = array(
-    'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
-    'hide_thumbs' => $hide_thumbs,
-  );
-  drupal_add_js(array('imagezoom' => $settings), 'setting');
-  drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
+  if (!variable_get('imagezoom_load_all', 0)) {
+    $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
+    drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
+    $settings = array(
+      'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
+      'hide_thumbs' => $hide_thumbs,
+    );
+    drupal_add_js(array('imagezoom' => $settings), 'setting');
+    drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
+  }
 
   $items = $variables['items'];
   $output = '';
@@ -322,4 +326,22 @@ function theme_imagezoom_image_multiple($variables) {
   $output .= '</div>';
 
   return $output;
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function imagezoom_preprocess_page(&$variables) {
+  $type = isset($variables['node']->type) ? $variables['node']->type : '';
+  $types = array_filter(variable_get('imagezoom_load_all_types', array()));
+  if (variable_get('imagezoom_load_all', 0) && in_array($type, $types)) {
+    $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
+    drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
+    $settings = array(
+      'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
+      'hide_thumbs' => $hide_thumbs,
+    );
+    drupal_add_js(array('imagezoom' => $settings), 'setting');
+    drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
+  }
 }

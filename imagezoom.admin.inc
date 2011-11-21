@@ -32,5 +32,26 @@ function imagezoom_settings_form() {
     '#default_value' => variable_get('imagezoom_hide_active_thumb', 0),
   );
 
+  $form['imagezoom_loading'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Script Loading'),
+    '#collapsible' => TRUE,
+  );
+
+  $form['imagezoom_loading']['imagezoom_load_all'] = array(
+    '#type' => 'radios',
+    '#title' => t('Load on all pages of the following types?'),
+    '#options' => array(t('No'), t('Yes')),
+    '#default_value' => variable_get('imagezoom_load_all', 0),
+  );
+
+  $types = node_type_get_names();
+  $form['imagezoom_loading']['imagezoom_load_all_types'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Content types'),
+    '#options' => $types,
+    '#default_value' => variable_get('imagezoom_load_all_types', array()),
+  );
+
   return system_settings_form($form);
 }
