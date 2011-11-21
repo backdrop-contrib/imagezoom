@@ -186,7 +186,7 @@ function imagezoom_theme() {
 function theme_imagezoom_image($variables) {
   if (!variable_get('imagezoom_load_all', 0)) {
     $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
-    drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
+    drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
     $settings = array(
       'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
       'hide_thumbs' => $hide_thumbs,
@@ -239,7 +239,7 @@ function theme_imagezoom_image($variables) {
 function theme_imagezoom_image_multiple($variables) {
   if (!variable_get('imagezoom_load_all', 0)) {
     $hide_thumbs = variable_get('imagezoom_hide_active_thumb', 0);
-    drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
+    drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
     $settings = array(
       'zoom_type' => variable_get('imagezoom_zoom_type', 'popup'),
       'hide_thumbs' => $hide_thumbs,

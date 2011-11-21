@@ -29,10 +29,13 @@
        *   The object that the mouse is hovering over.
        */
       function zoom_popup(obj) {
-        var zoomImageWrapper, zoomImage;
-
+        var zoomImageWrapper, zoomImage, title;
+        
         // create div to put zoomed image in
         zoomImageWrapper = $('<div/>', { id: 'zoom-img-wrapper', class: 'popup' });
+        // create a div with the title and add it to the wrapper
+        title = '<div class="zoom-img-title">' + obj.children('img').attr('title') + '</div>';
+        zoomImageWrapper.append(title);
         // create zoomed image
         zoomImage = $('<img/>', { src: obj.attr('href'), id: 'zoom-img' });
         // add the image wrapper div to its parent

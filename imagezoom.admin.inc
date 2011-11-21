@@ -32,6 +32,13 @@ function imagezoom_settings_form() {
     '#default_value' => variable_get('imagezoom_hide_active_thumb', 0),
   );
 
+  $form['imagezoom_display_title'] = array(
+    '#type' => 'radios',
+    '#title' => t('Display the image title in the zoom window?'),
+    '#options' => array(t('No'), t('Yes')),
+    '#default_value' => variable_get('imagezoom_display_title', 0),
+  );
+
   $form['imagezoom_loading'] = array(
     '#type' => 'fieldset',
     '#title' => t('Script Loading'),
