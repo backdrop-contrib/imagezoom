@@ -339,6 +339,9 @@ function theme_imagezoom_image_multiple($variables) {
     'items' => $thumbs,
     'class' => $classes,
   );
+  if (module_exists('jcarousel')) {
+    $variables['jcarousel'] = TRUE;
+  }
   $output .= theme('imagezoom_thumbs', $variables);
   $output .= '</div>';
 
@@ -351,7 +354,13 @@ function theme_imagezoom_image_multiple($variables) {
 function theme_imagezoom_thumbs($variables) {
   $items = $variables['items'];
   $class = $variables['class'];
-  $output = '<div class="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs">';
+  if ($variables['jcarousel']) {
+    $output = '<div class="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs jcarousel-skin-default">';
+    jcarousel_add('imagezoom-thumbs', array());
+  }
+  else {
+    $output = '<div class="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs">';
+  }
   foreach ($items as $key => $item) {
     $output .= '<li class="' . $class[$key] . '">' . $item . '</li>';
   }
