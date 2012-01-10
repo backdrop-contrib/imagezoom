@@ -27,8 +27,13 @@ a.imagezoom {
   cursor: crosshair;
 }
 
-#imagezoom-thumb-wrapper .imagezoom-thumb {
+ul.imagezoom-thumbs {
+  padding: 0px;
+}
+
+div.imagezoom-thumb-wrapper .imagezoom-thumb-image {
   float: left;
+  list-style: none;
   padding: 5px 5px 0px 0px;
 }
 

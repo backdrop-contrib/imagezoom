@@ -7,7 +7,7 @@
   Drupal.behaviors.zoomimage = {
     attach: function() {
       $('a.imagezoom').click(function(e) { e.preventDefault(); });
-      $('a.imagezoom-thumb-image').click(function(e) { swap(e, $(this)); });
+      $('li.imagezoom-thumb-image').click(function(e) { swap(e, $(this)); });
 
       switch (Drupal.settings.imagezoom.zoom_type) {
         case 'popup':
@@ -155,7 +155,7 @@
         zoomSrc = zoomSrc.substr(0, pos) + '/';
 
         // get the filename of the click thumbnail
-        thumbSrc = obj.children('img').attr('src');
+        thumbSrc = obj.children('a').children('img').attr('src');
         pos = thumbSrc.lastIndexOf('/');
         thumbSrc = thumbSrc.substr(pos + 1);
 

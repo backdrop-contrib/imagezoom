@@ -177,6 +177,12 @@ function imagezoom_theme() {
         'thumb_style' => NULL,
       ),
     ),
+    'imagezoom_thumbs' => array(
+      'variables' => array(
+        'items' => NULL,
+        'class' => NULL,
+      ),
+    ),
   );
 }
 
@@ -290,7 +296,8 @@ function theme_imagezoom_image_multiple($variables) {
   ));
   $output .= '</div>';
 
-  $output .= '<div id="imagezoom-thumb-wrapper" class="clearfix">';
+  $thumbs = array();
+  $classes = array();
   foreach ($items as $key => $item) {
     $image = array(
       'path' => $item['uri'],
@@ -311,23 +318,44 @@ function theme_imagezoom_image_multiple($variables) {
       $thumb = theme('image', $image);
     }
 
-    $classes = array('imagezoom-thumb-image');
+    $class = array('imagezoom-thumb-image');
     $hide = '';
     if ($key == 0) {
-      $classes[] = 'active';
+      $class[] = 'active';
       if ($hide_thumbs) {
-        $hide = ' imagezoom-thumb-hide';
+        $class[] = 'imagezoom-thumb-hide';
       }
     }
 
     $thumb = l($thumb, 'swap', array(
       'html' => TRUE,
-      'attributes' => array('class' => $classes),
     ));
 
-    $output .= '<div class="imagezoom-thumb' . $hide . '">' . $thumb . '</div>';
+    $thumbs[$key] = $thumb;
+    $classes[$key] = implode(' ', $class);
   }
+
+  $variables = array(
+    'items' => $thumbs,
+    'class' => $classes,
+  );
+  $output .= theme('imagezoom_thumbs', $variables);
   $output .= '</div>';
+
+  return $output;
+}
+
+/**
+ * Returns the HTML code for a set of thumbnails.
+ */
+function theme_imagezoom_thumbs($variables) {
+  $items = $variables['items'];
+  $class = $variables['class'];
+  $output = '<div class="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs">';
+  foreach ($items as $key => $item) {
+    $output .= '<li class="' . $class[$key] . '">' . $item . '</li>';
+  }
+  $output .= '</div></ul>';
 
   return $output;
 }
