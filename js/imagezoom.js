@@ -1,7 +1,7 @@
 (function($) {
 
   /**
-   * Javascript functions for creating a zoomed image, adding it to the page on 
+   * Javascript functions for creating a zoomed image, adding it to the page on
    * mouseover, and removing it from the page on mouseout.
    */
   Drupal.behaviors.zoomimage = {
@@ -32,9 +32,9 @@
         var zoomImageWrapper, zoomImage, title;
 
         // create div to put zoomed image in
-        zoomImageWrapper = $('<div/>', { id: 'zoom-img-wrapper', class: 'popup' });
+        zoomImageWrapper = $('<div/>', { 'id': 'zoom-img-wrapper', 'class': 'popup' });
         // create zoomed image
-        zoomImage = $('<img/>', { src: obj.attr('href'), id: 'zoom-img' });
+        zoomImage = $('<img/>', { 'src': obj.attr('href'), 'id': 'zoom-img' });
         // add the image wrapper div to its parent
         zoomImageWrapper.appendTo(obj.parent());
         // add the zoomed image to the wrapper div
@@ -71,7 +71,7 @@
         });
 
         // create div to put zoomed image in and set dimensions
-        zoomImageWrapper = $('<div/>', { id: 'zoom-img-wrapper', class: 'inner' });
+        zoomImageWrapper = $('<div/>', { 'id': 'zoom-img-wrapper', 'class': 'inner' });
         zoomImageWrapper.css({'height': image.height(), 'width': image.width()});
 
         // create zoomed image
@@ -91,7 +91,7 @@
       }
 
       /**
-       * Shifts the zoomed image inside the wrapper relative to the current 
+       * Shifts the zoomed image inside the wrapper relative to the current
        * mouse position.
        *
        * @param e
@@ -116,7 +116,7 @@
         posX = mouseX * ratioX;
         posY = mouseY * ratioY;
 
-        // make sure the new X and Y positions are within the boundaries 
+        // make sure the new X and Y positions are within the boundaries
         // of the image if using the popup
         if (posX > zoomImage.width()) {
           posX = zoomImage.width();
@@ -170,7 +170,7 @@
         // swap active class
         $('div.imagezoom-thumb.active').removeClass('active');
         obj.addClass('active');
-        
+
         // swap hide class if we want to
         if (Drupal.settings.imagezoom.hide_thumbs == 1) {
           $('div.imagezoom-thumb.imagezoom-thumb-hide').removeClass('imagezoom-thumb-hide');
