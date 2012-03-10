@@ -5,20 +5,20 @@
    * mouseover, and removing it from the page on mouseout.
    */
   Drupal.behaviors.zoomimage = {
-    attach: function() {
-      $('a.imagezoom').click(function(e) { e.preventDefault(); });
-      $('li.imagezoom-thumb-image').click(function(e) { swap(e, $(this)); });
+    attach: function(context, settings) {
+      $('a.imagezoom', context).click(function(e) { e.preventDefault(); });
+      $('li.imagezoom-thumb-image', context).click(function(e) { swap(e, $(this)); });
 
-      switch (Drupal.settings.imagezoom.zoom_type) {
+      switch (settings.imagezoom.zoom_type) {
         case 'popup':
-          $('a.imagezoom').mouseenter(function(e) { zoom_popup($(this)); });
-          $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
-          $('a.imagezoom').mouseleave(function(e) { reset(); });
+          $('a.imagezoom', context).mouseenter(function(e) { zoom_popup($(this)); });
+          $('a.imagezoom', context).mousemove(function(e) { shift(e, $(this)); });
+          $('a.imagezoom', context).mouseleave(function(e) { reset(); });
           break;
         case 'inner':
-          $('a.imagezoom').mouseenter(function(e) { zoom_inner($(this)); });
-          $('a.imagezoom').mousemove(function(e) { shift(e, $(this)); });
-          $('a.imagezoom').mouseleave(function(e) { reset(); });
+          $('a.imagezoom', context).mouseenter(function(e) { zoom_inner($(this)); });
+          $('a.imagezoom', context).mousemove(function(e) { shift(e, $(this)); });
+          $('a.imagezoom', context).mouseleave(function(e) { reset(); });
           break;
       }
 
@@ -41,13 +41,13 @@
         zoomImage.appendTo('#zoom-img-wrapper');
 
         // create a div with the title and add it to the wrapper if the option is set
-        if (Drupal.settings.imagezoom.display_title == 1) {
+        if (settings.imagezoom.display_title == 1) {
           title = '<div class="zoom-img-title">' + obj.children('img').attr('title') + '</div>';
           zoomImageWrapper.append(title);
         }
 
         // set the parent of the wrapper div to relative positioning.
-        $('#zoom-img-wrapper').parent('div').css('position', 'relative');
+        $('#zoom-img-wrapper', context).parent('div').css('position', 'relative');
       }
 
       /**
@@ -87,7 +87,7 @@
        * Removes the zoomed image from the page on mouseout.
        */
       function reset() {
-        $('#zoom-img-wrapper').remove();
+        $('#zoom-img-wrapper', context).remove();
       }
 
       /**
@@ -103,7 +103,7 @@
         var image, zoomImage, offset, mouseX, mouseY, ratioX, ratioY, posX, posY;
 
         image = obj.children('img');
-        zoomImage = $('#zoom-img');
+        zoomImage = $('#zoom-img', context);
 
         // get the current position of the mouse
         offset = image.offset();
@@ -111,8 +111,8 @@
         mouseY = e.pageY - offset.top;
 
         // calculate new X and Y positions for the zoomed image
-        ratioX = (zoomImage.width() - $('#zoom-img-wrapper').width()) / image.width();
-        ratioY = (zoomImage.height() - $('#zoom-img-wrapper').height()) / image.height();
+        ratioX = (zoomImage.width() - $('#zoom-img-wrapper', context).width()) / image.width();
+        ratioY = (zoomImage.height() - $('#zoom-img-wrapper', context).height()) / image.height();
         posX = mouseX * ratioX;
         posY = mouseY * ratioY;
 
@@ -127,8 +127,8 @@
         }
 
         // set the new X and Y positions
-        $('#zoom-img').css('left', (posX * -1) + 'px');
-        $('#zoom-img').css('top', (posY * -1) + 'px');
+        $('#zoom-img', context).css('left', (posX * -1) + 'px');
+        $('#zoom-img', context).css('top', (posY * -1) + 'px');
       }
 
       /**
@@ -145,12 +145,12 @@
         var mainSrc, zoomSrc, thumbSrc, newMainSrc, newZoomSrc, pos;
 
         // get the base path for the main image
-        mainSrc = $('a.imagezoom img').attr('src');
+        mainSrc = $('a.imagezoom img', context).attr('src');
         pos = mainSrc.lastIndexOf('/');
         mainSrc = mainSrc.substr(0, pos) + '/';
 
         // get the base path for the zoomed image
-        zoomSrc = $('a.imagezoom').attr('href');
+        zoomSrc = $('a.imagezoom', context).attr('href');
         pos = zoomSrc.lastIndexOf('/');
         zoomSrc = zoomSrc.substr(0, pos) + '/';
 
@@ -164,16 +164,16 @@
         newZoomSrc = zoomSrc + thumbSrc;
 
         // swap sources
-        $('a.imagezoom img').attr('src', newMainSrc);
-        $('a.imagezoom').attr('href', newZoomSrc);
+        $('a.imagezoom img', context).attr('src', newMainSrc);
+        $('a.imagezoom', context).attr('href', newZoomSrc);
 
         // swap active class
-        $('div.imagezoom-thumb.active').removeClass('active');
+        $('div.imagezoom-thumb.active', context).removeClass('active');
         obj.addClass('active');
 
         // swap hide class if we want to
-        if (Drupal.settings.imagezoom.hide_thumbs == 1) {
-          $('div.imagezoom-thumb.imagezoom-thumb-hide').removeClass('imagezoom-thumb-hide');
+        if (settings.imagezoom.hide_thumbs == 1) {
+          $('div.imagezoom-thumb.imagezoom-thumb-hide', context).removeClass('imagezoom-thumb-hide');
           obj.parent('div').addClass('imagezoom-thumb-hide');
         }
       }
