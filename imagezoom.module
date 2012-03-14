@@ -344,7 +344,7 @@ function theme_imagezoom_image_multiple($variables) {
 function theme_imagezoom_thumbs($variables) {
   $items = $variables['items'];
   $class = $variables['class'];
-  if ($variables['jcarousel']) {
+  if (isset($variables['jcarousel'])) {
     $output = '<div class="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs jcarousel-skin-default">';
     jcarousel_add('imagezoom-thumbs', array());
   }
