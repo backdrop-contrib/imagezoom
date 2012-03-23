@@ -124,7 +124,7 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
     $display['settings']['imagezoom_thumb_style'] : NULL;
 
   $element = array();
-  if (variable_get('imagezoom_multiple_thumbs', 0)) {
+  if (variable_get('imagezoom_multiple_thumbs', 0) && count($items) > 1) {
     $element[] = array(
       '#theme' => 'imagezoom_image_multiple',
       '#items' => $items,
