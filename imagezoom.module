@@ -33,7 +33,7 @@ function imagezoom_field_formatter_info() {
   $formatters = array(
     'imagezoom' => array(
       'label' => t('Image Zoom'),
-      'field types' => array('image'),
+      'field types' => array('image', 'media'),
       'settings' => array(
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
@@ -194,6 +194,10 @@ function theme_imagezoom_image($variables) {
   }
 
   $item = $variables['item'];
+  if (is_object($item['file'])) {
+    $item['uri'] = $item['file']->uri;
+    $item['alt'] = '';
+  }
 
   $image = array(
     'path' => $item['uri'],
