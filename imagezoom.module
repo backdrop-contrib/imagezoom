@@ -344,7 +344,6 @@ function theme_imagezoom_image_multiple($variables) {
     $variables['jcarousel'] = TRUE;
   }
   $output .= theme('imagezoom_thumbs', $variables);
-  $output .= '</div>';
 
   return $output;
 }
@@ -365,7 +364,7 @@ function theme_imagezoom_thumbs($variables) {
   foreach ($items as $key => $item) {
     $output .= '<li class="' . $class[$key] . '">' . $item . '</li>';
   }
-  $output .= '</div></ul>';
+  $output .= '</ul></div>';
 
   return $output;
 }
