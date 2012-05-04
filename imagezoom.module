@@ -194,7 +194,7 @@ function theme_imagezoom_image($variables) {
   drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
 
   $item = $variables['item'];
-  if (is_object($item['file'])) {
+  if (isset($item['file']) && is_object($item['file'])) {
     $item['uri'] = $item['file']->uri;
     $item['alt'] = '';
   }
