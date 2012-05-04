@@ -229,7 +229,10 @@ function theme_imagezoom_image($variables) {
 
   $output = l($display_img, $zoom_img, array(
     'html' => TRUE,
-    'attributes' => array('class' => 'imagezoom'),
+    'attributes' => array(
+      'class' => 'imagezoom',
+      'rel' => 'nofollow',
+    ),
   ));
 
   return $output;
@@ -286,7 +289,10 @@ function theme_imagezoom_image_multiple($variables) {
   $output .= '<div id="imagezoom-main">';
   $output .= l($main_img, $zoom_img, array(
     'html' => TRUE,
-    'attributes' => array('class' => 'imagezoom'),
+    'attributes' => array(
+      'class' => 'imagezoom',
+      'rel' => 'nofollow',
+    ),
   ));
   $output .= '</div>';
 
@@ -323,6 +329,7 @@ function theme_imagezoom_image_multiple($variables) {
 
     $thumb = l($thumb, 'swap', array(
       'html' => TRUE,
+      'attributes' => array('rel' => 'nofollow'),
     ));
 
     $thumbs[$key] = $thumb;
