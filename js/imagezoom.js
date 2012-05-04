@@ -168,13 +168,13 @@
         $('a.imagezoom', context).attr('href', newZoomSrc);
 
         // swap active class
-        $('div.imagezoom-thumb.active', context).removeClass('active');
+        $('li.imagezoom-thumb-image.active', context).removeClass('active');
         obj.addClass('active');
 
         // swap hide class if we want to
         if (settings.imagezoom.hide_thumbs == 1) {
-          $('div.imagezoom-thumb.imagezoom-thumb-hide', context).removeClass('imagezoom-thumb-hide');
-          obj.parent('div').addClass('imagezoom-thumb-hide');
+          $('li.imagezoom-thumb-image.imagezoom-thumb-hide', context).removeClass('imagezoom-thumb-hide');
+          obj.addClass('imagezoom-thumb-hide');
         }
       }
     }
