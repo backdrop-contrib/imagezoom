@@ -340,7 +340,7 @@ function theme_imagezoom_image_multiple($variables) {
     'items' => $thumbs,
     'class' => $classes,
   );
-  if (module_exists('jcarousel')) {
+  if (module_exists('jcarousel') && variable_get('imagezoom_thumb_jcarousel', 0)) {
     $variables['jcarousel'] = TRUE;
   }
   $output .= theme('imagezoom_thumbs', $variables);

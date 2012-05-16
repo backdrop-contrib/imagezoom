@@ -23,6 +23,20 @@ function imagezoom_settings_form() {
     '#default_value' => variable_get('imagezoom_multiple_thumbs', 0),
   );
 
+  if (module_exists('jcarousel')) {
+    $form['imagezoom_thumbs_jcarousel'] = array(
+      '#type' => 'radios',
+      '#title' => t('Display thumbnails as a jCarousel?'),
+      '#options' => array(t('No'), t('Yes')),
+      '#default_value' => variable_get('imagezoom_thumbs_jcarousel', 0),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="imagezoom_multiple_thumbs"]' => array('value' => 1),
+        ),
+      ),
+    );
+  }
+
   $form['imagezoom_hide_active_thumb'] = array(
     '#type' => 'radios',
     '#title' => t('Hide active thumbnail?'),
