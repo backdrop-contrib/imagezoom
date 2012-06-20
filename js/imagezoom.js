@@ -142,7 +142,7 @@
       function swap(e, obj) {
         e.preventDefault();
 
-        var mainSrc, zoomSrc, thumbSrc, newMainSrc, newZoomSrc, pos;
+        var mainSrc, zoomSrc, thumb, thumbSrc, pos;
 
         // get the base path for the main image
         mainSrc = $('a.imagezoom img', context).attr('src');
@@ -155,17 +155,16 @@
         zoomSrc = zoomSrc.substr(0, pos) + '/';
 
         // get the filename of the click thumbnail
-        thumbSrc = obj.children('a').children('img').attr('src');
+        thumb = obj.children('a').children('img');
+        thumbSrc = thumb.attr('src');
         pos = thumbSrc.lastIndexOf('/');
         thumbSrc = thumbSrc.substr(pos + 1);
 
-        // create new source paths
-        newMainSrc = mainSrc + thumbSrc;
-        newZoomSrc = zoomSrc + thumbSrc;
-
-        // swap sources
-        $('a.imagezoom img', context).attr('src', newMainSrc);
-        $('a.imagezoom', context).attr('href', newZoomSrc);
+        // swap attributes
+        $('a.imagezoom img', context).attr('src', mainSrc + thumbSrc);
+        $('a.imagezoom img', context).attr('alt', thumb.attr('alt'));
+        $('a.imagezoom img', context).attr('title', thumb.attr('title'));
+        $('a.imagezoom', context).attr('href', zoomSrc + thumbSrc);
 
         // swap active class
         $('li.imagezoom-thumb-image.active', context).removeClass('active');
