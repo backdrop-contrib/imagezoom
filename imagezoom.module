@@ -227,13 +227,17 @@ function theme_imagezoom_image($variables) {
     $zoom_img = file_create_url($image['path']);
   }
 
-  $output = l($display_img, $zoom_img, array(
+  $options = array(
     'html' => TRUE,
     'attributes' => array(
-      'class' => 'imagezoom',
+      'class' => array('imagezoom'),
       'rel' => 'nofollow',
     ),
-  ));
+  );
+  if (variable_get('imagezoom_colorbox', 0)) {
+    $options['attributes']['class'][] = 'colorbox';
+  }
+  $output = l($display_img, $zoom_img, $options);
 
   return $output;
 }
@@ -287,13 +291,17 @@ function theme_imagezoom_image_multiple($variables) {
   }
 
   $output .= '<div id="imagezoom-main">';
-  $output .= l($main_img, $zoom_img, array(
+  $options = array(
     'html' => TRUE,
     'attributes' => array(
-      'class' => 'imagezoom',
+      'class' => array('imagezoom'),
       'rel' => 'nofollow',
     ),
-  ));
+  );
+  if (variable_get('imagezoom_colorbox', 0)) {
+    $options['attributes']['class'][] = 'colorbox';
+  }
+  $output .= l($main_img, $zoom_img, $options);
   $output .= '</div>';
 
   $thumbs = array();

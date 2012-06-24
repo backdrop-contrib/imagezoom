@@ -53,6 +53,15 @@ function imagezoom_settings_form() {
     '#default_value' => variable_get('imagezoom_display_title', 0),
   );
 
+  if (module_exists('colorbox')) {
+    $form['imagezoom_colorbox'] = array(
+      '#type' => 'radios',
+      '#title' => t('Open image in Colorbox when clicked?'),
+      '#options' => array(t('No'), t('Yes')),
+      '#default_value' => variable_get('imagezoom_colorbox', 0),
+    );
+  }
+
   $form['imagezoom_loading'] = array(
     '#type' => 'fieldset',
     '#title' => t('Script Loading'),
