@@ -16,4 +16,6 @@ function imagezoom_uninstall() {
   variable_del('imagezoom_display_title');
   variable_del('imagezoom_load_all');
   variable_del('imagezoom_load_all_types');
+  variable_del('imagezoom_thumbs_jcarousel');
+  variable_del('imagezoom_colorbox');
 }
