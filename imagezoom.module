@@ -321,9 +321,11 @@ function theme_imagezoom_image_multiple($variables) {
     if ($variables['thumb_style']) {
       $image['style_name'] = $variables['thumb_style'];
       $thumb = theme('image_style', $image);
+      $thumb_path = image_style_url($variables['thumb_style'], $item['uri']);
     }
     else {
       $thumb = theme('image', $image);
+      $thumb_path = file_create_url($item['uri']);
     }
 
     $class = array('imagezoom-thumb-image');
@@ -335,7 +337,7 @@ function theme_imagezoom_image_multiple($variables) {
       }
     }
 
-    $thumb = l($thumb, 'swap', array(
+    $thumb = l($thumb, $thumb_path, array(
       'html' => TRUE,
       'attributes' => array('rel' => 'nofollow'),
     ));
