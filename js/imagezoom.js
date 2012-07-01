@@ -164,6 +164,7 @@
         $('a.imagezoom img', context).attr('src', mainSrc + thumbSrc);
         $('a.imagezoom img', context).attr('alt', thumb.attr('alt'));
         $('a.imagezoom img', context).attr('title', thumb.attr('title'));
+        $('a.imagezoom', context).attr('title', thumb.attr('title'));
         $('a.imagezoom', context).attr('href', zoomSrc + thumbSrc);
 
         // swap active class

@@ -230,6 +230,7 @@ function theme_imagezoom_image($variables) {
   $options = array(
     'html' => TRUE,
     'attributes' => array(
+      'title' => $image['title'],
       'class' => array('imagezoom'),
       'rel' => 'nofollow',
     ),
@@ -294,6 +295,7 @@ function theme_imagezoom_image_multiple($variables) {
   $options = array(
     'html' => TRUE,
     'attributes' => array(
+      'title' => $image['title'],
       'class' => array('imagezoom'),
       'rel' => 'nofollow',
     ),
