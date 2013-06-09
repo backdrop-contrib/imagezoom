@@ -17,47 +17,47 @@ function imagezoom_settings_form() {
   );
 
   $form['imagezoom_multiple_thumbs'] = array(
-    '#type' => 'radios',
+    '#type' => 'checkbox',
     '#title' => t('Display multiple images as thumbnails?'),
-    '#options' => array(t('No'), t('Yes')),
     '#default_value' => variable_get('imagezoom_multiple_thumbs', 0),
   );
 
   if (module_exists('jcarousel')) {
     $form['imagezoom_thumbs_jcarousel'] = array(
-      '#type' => 'radios',
+      '#type' => 'checkbox',
       '#title' => t('Display thumbnails as a jCarousel?'),
-      '#options' => array(t('No'), t('Yes')),
       '#default_value' => variable_get('imagezoom_thumbs_jcarousel', 0),
       '#states' => array(
         'visible' => array(
-          ':input[name="imagezoom_multiple_thumbs"]' => array('value' => 1),
+          ':input[name="imagezoom_multiple_thumbs"]' => array('checked' => TRUE),
         ),
       ),
     );
   }
 
   $form['imagezoom_hide_active_thumb'] = array(
-    '#type' => 'radios',
+    '#type' => 'checkbox',
     '#title' => t('Hide active thumbnail?'),
     '#description' => t('When multiple images are shown as thumbnails, should
       the active thumbnail be hidden?'),
-    '#options' => array(t('No'), t('Yes')),
     '#default_value' => variable_get('imagezoom_hide_active_thumb', 0),
   );
 
   $form['imagezoom_display_title'] = array(
-    '#type' => 'radios',
+    '#type' => 'checkbox',
     '#title' => t('Display the image title in the zoom window?'),
-    '#options' => array(t('No'), t('Yes')),
     '#default_value' => variable_get('imagezoom_display_title', 0),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="imagezoom_zoom_type"]' => array('value' => 'popup'),
+      ),
+    ),
   );
 
   if (module_exists('colorbox')) {
     $form['imagezoom_colorbox'] = array(
-      '#type' => 'radios',
+      '#type' => 'checkbox',
       '#title' => t('Open image in Colorbox when clicked?'),
-      '#options' => array(t('No'), t('Yes')),
       '#default_value' => variable_get('imagezoom_colorbox', 0),
     );
   }
@@ -69,9 +69,8 @@ function imagezoom_settings_form() {
   );
 
   $form['imagezoom_loading']['imagezoom_load_all'] = array(
-    '#type' => 'radios',
-    '#title' => t('Load on all pages of the following types?'),
-    '#options' => array(t('No'), t('Yes')),
+    '#type' => 'checkbox',
+    '#title' => t('Load the Image Zoom javascript on all pages?'),
     '#default_value' => variable_get('imagezoom_load_all', 0),
   );
 
@@ -79,8 +78,14 @@ function imagezoom_settings_form() {
   $form['imagezoom_loading']['imagezoom_load_all_types'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Content types'),
+    '#description' => t('Select the content types the script will be loaded for.'),
     '#options' => $types,
     '#default_value' => variable_get('imagezoom_load_all_types', array()),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="imagezoom_load_all"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   return system_settings_form($form);
