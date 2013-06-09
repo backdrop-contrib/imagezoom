@@ -230,11 +230,15 @@ function theme_imagezoom_image($variables) {
   $options = array(
     'html' => TRUE,
     'attributes' => array(
-      'title' => $image['title'],
       'class' => array('imagezoom'),
       'rel' => 'nofollow',
     ),
   );
+
+  if (isset($image['title'])) {
+    $options['attributes']['title'] = $image['title'];
+  }
+
   if (variable_get('imagezoom_colorbox', 0)) {
     $options['attributes']['class'][] = 'colorbox';
   }
@@ -295,11 +299,15 @@ function theme_imagezoom_image_multiple($variables) {
   $options = array(
     'html' => TRUE,
     'attributes' => array(
-      'title' => $image['title'],
       'class' => array('imagezoom'),
       'rel' => 'nofollow',
     ),
   );
+
+  if (isset($image['title'])) {
+    $options['attributes']['title'] = $image['title'];
+  }
+
   if (variable_get('imagezoom_colorbox', 0)) {
     $options['attributes']['class'][] = 'colorbox';
   }
