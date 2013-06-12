@@ -104,24 +104,13 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
     $display['settings']['imagezoom_thumb_style'] : NULL;
 
   $element = array();
-  if (count($items) > 1) {
-    $element[] = array(
-      '#theme' => 'imagezoom_image_multiple',
-      '#items' => $items,
+  foreach ($items as $delta => $item) {
+    $element[$delta] = array(
+      '#theme' => 'imagezoom_image',
+      '#item' => $item,
       '#display_style' => $display_style,
       '#zoom_style' => $zoom_style,
-      '#thumb_style' => $thumb_style,
     );
-  }
-  else {
-    foreach ($items as $delta => $item) {
-      $element[$delta] = array(
-        '#theme' => 'imagezoom_image',
-        '#item' => $item,
-        '#display_style' => $display_style,
-        '#zoom_style' => $zoom_style,
-      );
-    }
   }
 
   return $element;
@@ -137,20 +126,6 @@ function imagezoom_theme() {
         'item' => NULL,
         'display_style' => NULL,
         'zoom_style' => NULL,
-      ),
-    ),
-    'imagezoom_image_multiple' => array(
-      'variables' => array(
-        'items' => NULL,
-        'display_style' => NULL,
-        'zoom_style' => NULL,
-        'thumb_style' => NULL,
-      ),
-    ),
-    'imagezoom_thumbs' => array(
-      'variables' => array(
-        'items' => NULL,
-        'class' => NULL,
       ),
     ),
   );
@@ -206,135 +181,6 @@ function theme_imagezoom_image($variables) {
   }
 
   $output = l($display_img, $zoom_img, $options);
-
-  return $output;
-}
-
-/**
- * Returns the HTML code for an image with a zoomed version on mouseover.
- */
-function theme_imagezoom_image_multiple($variables) {
-  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
-  drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
-
-  $items = $variables['items'];
-  $output = '';
-
-  $image = array(
-    'path' => $items[0]['uri'],
-    'alt' => $items[0]['alt'],
-  );
-
-  // Do not output an empty 'title' attribute.
-  if (drupal_strlen($items[0]['title']) > 0) {
-    $image['title'] = $items[0]['title'];
-  }
-
-  $main_img = '';
-  if ($variables['display_style']) {
-    $image['style_name'] = $variables['display_style'];
-    $main_img = theme('image_style', $image);
-  }
-  else {
-    $main_img = theme('image', $image);
-  }
-
-  $zoom_img = '';
-  if ($variables['zoom_style']) {
-    $image['style_name'] = $variables['zoom_style'];
-    $zoom_img = image_style_url($variables['zoom_style'], $items[0]['uri']);
-  }
-  else {
-    $zoom_img = file_create_url($image['path']);
-  }
-
-  $output .= '<div id="imagezoom-main">';
-  $options = array(
-    'html' => TRUE,
-    'attributes' => array(
-      'class' => array('imagezoom'),
-      'rel' => 'nofollow',
-    ),
-  );
-
-  if (isset($image['title'])) {
-    $options['attributes']['title'] = $image['title'];
-  }
-
-  $output .= l($main_img, $zoom_img, $options);
-  $output .= '</div>';
-
-  $thumbs = array();
-  $classes = array();
-  foreach ($items as $key => $item) {
-    $image = array(
-      'path' => $item['uri'],
-      'alt' => $item['alt'],
-    );
-
-    // Do not output an empty 'title' attribute.
-    if (drupal_strlen($item['title']) > 0) {
-      $image['title'] = $item['title'];
-    }
-
-    $thumb = '';
-    if ($variables['thumb_style']) {
-      $image['style_name'] = $variables['thumb_style'];
-      $thumb = theme('image_style', $image);
-      $thumb_path = image_style_url($variables['thumb_style'], $item['uri']);
-    }
-    else {
-      $thumb = theme('image', $image);
-      $thumb_path = file_create_url($item['uri']);
-    }
-
-    $class = array('imagezoom-thumb-image');
-    $hide = '';
-    if ($key == 0) {
-      $class[] = 'active';
-      if ($hide_thumbs) {
-        $class[] = 'imagezoom-thumb-hide';
-      }
-    }
-
-    $thumb = l($thumb, $thumb_path, array(
-      'html' => TRUE,
-      'attributes' => array('rel' => 'nofollow'),
-    ));
-
-    $thumbs[$key] = $thumb;
-    $classes[$key] = implode(' ', $class);
-  }
-
-  $variables = array(
-    'items' => $thumbs,
-    'class' => $classes,
-  );
-  if (module_exists('jcarousel')) {
-    $variables['jcarousel'] = TRUE;
-  }
-  $output .= theme('imagezoom_thumbs', $variables);
-
-  return $output;
-}
-
-/**
- * Returns the HTML code for a set of thumbnails.
- */
-function theme_imagezoom_thumbs($variables) {
-  $items = $variables['items'];
-  $class = $variables['class'];
-  if (isset($variables['jcarousel'])) {
-    $output = '<div class="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs jcarousel-skin-default">';
-    jcarousel_add('imagezoom-thumbs', array());
-  }
-  else {
-    $output = '<div class="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs">';
-  }
-  foreach ($items as $key => $item) {
-    $output .= '<li class="' . $class[$key] . '">' . $item . '</li>';
-  }
-  $output .= '</ul></div>';
 
   return $output;
 }
