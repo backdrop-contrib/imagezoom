@@ -11,6 +11,28 @@
  */
 
 /**
+ * Implements hook_libraries_info().
+ */
+function imagezoom_libraries_info() {
+  $libraries['elevatezoom'] = array(
+    'name' => 'Elevate Zoom',
+    'vendor url' => 'http://www.elevateweb.co.uk/image-zoom',
+    'download url' => 'http://www.elevateweb.co.uk/image-zoom/download',
+    'version arguments' => array(
+      'file' => 'jquery.elevateZoom.min.js',
+      'pattern' => '@elevateZoom\s+([0-9\.]+)@',
+      'lines' => 1,
+      'cols' => 50,
+    ),
+    'files' => array(
+      'js' => array('jquery.elevateZoom.min.js'),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
  * Implements hook_field_formatter().
  */
 function imagezoom_field_formatter_info() {
@@ -135,52 +157,50 @@ function imagezoom_theme() {
  * Returns the HTML code for an image with a zoomed version on mouseover.
  */
 function theme_imagezoom_image($variables) {
-  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.min.js');
+  $library = libraries_load('elevatezoom');
+  if (!$library['loaded']) {
+    drupal_set_message(t('Elevate Zoom library could not be loaded.'), 'error');
+  }
+  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
   drupal_add_css(drupal_get_path('module', 'imagezoom') . '/css/imagezoom.css');
 
   $item = $variables['item'];
 
   $image = array(
     'path' => $item['uri'],
-    'alt' => $item['alt'],
   );
+
+  if (array_key_exists('alt', $item)) {
+    $image['alt'] = $item['alt'];
+  }
 
   // Do not output an empty 'title' attribute.
   if (drupal_strlen($item['title']) > 0) {
     $image['title'] = $item['title'];
   }
 
-  $display_img = '';
+  if (isset($item['width']) && isset($item['height'])) {
+    $image['width'] = $item['width'];
+    $image['height'] = $item['height'];
+  }
+
+  if ($variables['zoom_style']) {
+    $zoom_image = image_style_url($variables['zoom_style'], $item['uri']);
+  }
+  else {
+    $zoom_image = file_create_url($item['uri']);
+  }
+
+  $image['attributes']['data-zoom-image'] = $zoom_image;
+  $image['attributes']['class'] = 'imagezoom-image';
+
   if ($variables['display_style']) {
     $image['style_name'] = $variables['display_style'];
-    $display_img = theme('image_style', $image);
+    $output = theme('image_style', $image);
   }
   else {
-    $display_img = theme('image', $image);
+    $output = theme('image', $image);
   }
-
-  $zoom_img = '';
-  if ($variables['zoom_style']) {
-    $image['style_name'] = $variables['zoom_style'];
-    $zoom_img = image_style_url($variables['zoom_style'], $item['uri']);
-  }
-  else {
-    $zoom_img = file_create_url($image['path']);
-  }
-
-  $options = array(
-    'html' => TRUE,
-    'attributes' => array(
-      'class' => array('imagezoom'),
-      'rel' => 'nofollow',
-    ),
-  );
-
-  if (isset($image['title'])) {
-    $options['attributes']['title'] = $image['title'];
-  }
-
-  $output = l($display_img, $zoom_img, $options);
 
   return $output;
 }
