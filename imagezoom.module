@@ -19,13 +19,13 @@ function imagezoom_libraries_info() {
     'vendor url' => 'http://www.elevateweb.co.uk/image-zoom',
     'download url' => 'http://www.elevateweb.co.uk/image-zoom/download',
     'version arguments' => array(
-      'file' => 'jquery.elevateZoom.min.js',
+      'file' => 'jquery.elevateZoom.js',
       'pattern' => '@elevateZoom\s+([0-9\.]+)@',
-      'lines' => 1,
+      'lines' => 2,
       'cols' => 50,
     ),
     'files' => array(
-      'js' => array('jquery.elevateZoom.min.js'),
+      'js' => array('jquery.elevateZoom.js'),
     ),
   );
 
