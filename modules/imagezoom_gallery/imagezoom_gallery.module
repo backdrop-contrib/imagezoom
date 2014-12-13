@@ -166,6 +166,9 @@ function theme_imagezoom_thumb($variables) {
   }
 
   if ($variables['display_style']) {
+    $image_style = image_style_load($variables['display_style']);
+    $derivative_uri = image_style_path($variables['display_style'], $item['uri']);
+    image_style_create_derivative($image_style, $item['uri'], $derivative_uri);
     $display_image = image_style_url($variables['display_style'], $item['uri']);
   }
   else {
@@ -173,6 +176,9 @@ function theme_imagezoom_thumb($variables) {
   }
 
   if ($variables['zoom_style']) {
+    $image_style = image_style_load($variables['zoom_style']);
+    $derivative_uri = image_style_path($variables['zoom_style'], $item['uri']);
+    image_style_create_derivative($image_style, $item['uri'], $derivative_uri);
     $zoom_image = image_style_url($variables['zoom_style'], $item['uri']);
   }
   else {
