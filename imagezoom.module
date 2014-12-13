@@ -43,7 +43,6 @@ function imagezoom_field_formatter_info() {
       'settings' => array(
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
-        'imagezoom_thumb_style' => '',
       ),
     ),
   );
@@ -75,14 +74,6 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
     '#default_value' => $settings['imagezoom_zoom_style'],
   );
 
-  $element['imagezoom_thumb_style'] = array(
-    '#type' => 'select',
-    '#title' => t('Thumbnail image style'),
-    '#options' => $image_styles,
-    '#empty_option' => t('None (original image)'),
-    '#default_value' => $settings['imagezoom_thumb_style'],
-  );
-
   return $element;
 }
 
@@ -108,10 +99,6 @@ function imagezoom_field_formatter_settings_summary($field, $instance, $view_mod
     '@style' => isset($image_styles[$settings['imagezoom_zoom_style']]) ?
     $image_styles[$settings['imagezoom_zoom_style']] : 'original',
   ));
-  $summary[] = t('Thumbnail image style: @style', array(
-    '@style' => isset($image_styles[$settings['imagezoom_thumb_style']]) ?
-    $image_styles[$settings['imagezoom_thumb_style']] : 'original',
-  ));
 
   return implode('<br />', $summary);
 }
@@ -122,8 +109,6 @@ function imagezoom_field_formatter_settings_summary($field, $instance, $view_mod
 function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $display_style = $display['settings']['imagezoom_display_style'];
   $zoom_style = $display['settings']['imagezoom_zoom_style'];
-  $thumb_style = isset($display['settings']['imagezoom_thumb_style']) ?
-    $display['settings']['imagezoom_thumb_style'] : NULL;
 
   $element = array();
   foreach ($items as $delta => $item) {
