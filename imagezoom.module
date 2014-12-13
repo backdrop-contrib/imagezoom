@@ -41,6 +41,7 @@ function imagezoom_field_formatter_info() {
       'label' => t('Image Zoom'),
       'field types' => array('image'),
       'settings' => array(
+        'imagezoom_zoom_type' => '',
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
       ),
@@ -56,6 +57,13 @@ function imagezoom_field_formatter_info() {
 function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
+
+  $element['imagezoom_zoom_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Zoom type'),
+    '#options' => imagezoom_zoom_types(),
+    '#default_value' => $settings['imagezoom_zoom_type'],
+  );
 
   $image_styles = image_style_options(FALSE);
   $element['imagezoom_display_style'] = array(
@@ -86,6 +94,11 @@ function imagezoom_field_formatter_settings_summary($field, $instance, $view_mod
 
   $summary = array();
 
+  $zoom_types = imagezoom_zoom_types();
+  $summary[] = t('Zoom type: @type', array(
+    '@type' => $zoom_types[$settings['imagezoom_zoom_type']],
+  ));
+
   $image_styles = image_style_options(FALSE);
   // Unset possible 'No defined styles' option.
   unset($image_styles['']);
@@ -110,6 +123,10 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
   $display_style = $display['settings']['imagezoom_display_style'];
   $zoom_style = $display['settings']['imagezoom_zoom_style'];
 
+  $settings = array(
+    'zoomType' => $display['settings']['imagezoom_zoom_type'],
+  );
+
   $element = array();
   foreach ($items as $delta => $item) {
     $element[$delta] = array(
@@ -117,6 +134,7 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
       '#item' => $item,
       '#display_style' => $display_style,
       '#zoom_style' => $zoom_style,
+      '#settings' => $settings,
     );
   }
 
@@ -133,6 +151,7 @@ function imagezoom_theme() {
         'item' => NULL,
         'display_style' => NULL,
         'zoom_style' => NULL,
+        'settings' => NULL,
       ),
     ),
   );
@@ -146,6 +165,7 @@ function theme_imagezoom_image($variables) {
   if (!$library['loaded']) {
     drupal_set_message($library['error message'], 'error');
   }
+  drupal_add_js(array('imagezoom' => $variables['settings']), 'setting');
   drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
 
   $item = $variables['item'];
@@ -187,4 +207,17 @@ function theme_imagezoom_image($variables) {
   }
 
   return $output;
+}
+
+/**
+ * Returns an array of available zoom types.
+ */
+function imagezoom_zoom_types() {
+  $types = array(
+    'window' => t('Window'),
+    'inner' => t('Inner'),
+    'lens' => t('Lens'),
+  );
+
+  return $types;
 }

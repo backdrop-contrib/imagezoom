@@ -5,7 +5,7 @@
    */
   Drupal.behaviors.imagezoom = {
     attach: function(context, settings) {
-      $('.imagezoom-image', context).elevateZoom();
+      $('.imagezoom-image', context).elevateZoom(settings.imagezoom);
     }
   }
 
