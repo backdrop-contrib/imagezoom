@@ -1,0 +1,5 @@
+name = Image Zoom Gallery
+description = Provides a gallery formatter for the Image Zoom module.
+core = 7.x
+
+dependencies[] = imagezoom

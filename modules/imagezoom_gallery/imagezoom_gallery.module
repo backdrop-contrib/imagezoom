@@ -1,0 +1,193 @@
+<?php
+
+/**
+ * @file
+ * Provides a gallery formatter for the Image Zoom module.
+ */
+
+/**
+ * Implements hook_field_formatter().
+ */
+function imagezoom_gallery_field_formatter_info() {
+  $formatters = array(
+    'imagezoom_gallery' => array(
+      'label' => t('Image Zoom Gallery'),
+      'field types' => array('image'),
+      'settings' => array(
+        'imagezoom_zoom_type' => '',
+        'imagezoom_display_style' => '',
+        'imagezoom_zoom_style' => '',
+        'imagezoom_thumb_style' => '',
+      ),
+    ),
+  );
+
+  return $formatters;
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function imagezoom_gallery_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $element = imagezoom_field_formatter_settings_form($field, $instance, $view_mode, $form, $form_state);
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element['imagezoom_thumb_style'] = $element['imagezoom_display_style'];
+  $element['imagezoom_thumb_style']['#title'] = t('Thumbnail image style');
+  $element['imagezoom_thumb_style']['#default_value'] = $settings['imagezoom_thumb_style'];
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function imagezoom_gallery_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = imagezoom_field_formatter_settings_summary($field, $instance, $view_mode);
+  $summary = explode('<br />', $summary);
+
+  $image_styles = image_style_options(FALSE);
+  // Unset possible 'No defined styles' option.
+  unset($image_styles['']);
+  // Styles could be lost because of enabled/disabled modules that define
+  // their styles in code.
+  $summary[] = t('Thumbnail image style: @style', array(
+    '@style' => isset($image_styles[$settings['imagezoom_thumb_style']]) ?
+    $image_styles[$settings['imagezoom_thumb_style']] : 'original',
+  ));
+
+  return implode('<br />', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function imagezoom_gallery_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $display_style = $display['settings']['imagezoom_display_style'];
+  $zoom_style = $display['settings']['imagezoom_zoom_style'];
+  $thumb_style = $display['settings']['imagezoom_thumb_style'];
+
+  $settings = array(
+    'zoomType' => $display['settings']['imagezoom_zoom_type'],
+    'gallery' => 'imagezoom-thumb-wrapper',
+  );
+
+  $element = array(
+    '#theme' => 'imagezoom_gallery',
+    '#items' => $items,
+    '#display_style' => $display_style,
+    '#zoom_style' => $zoom_style,
+    '#thumb_style' => $thumb_style,
+    '#settings' => $settings,
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function imagezoom_gallery_theme() {
+  return array(
+    'imagezoom_gallery' => array(
+      'variables' => array(
+        'items' => NULL,
+        'display_style' => NULL,
+        'zoom_style' => NULL,
+        'thumb_style' => NULL,
+        'settings' => NULL,
+      ),
+    ),
+    'imagezoom_thumb' => array(
+      'variables' => array(
+        'item' => NULL,
+        'display_style' => NULL,
+        'zoom_style' => NULL,
+        'settings' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Returns the HTML code for an Image Zoom gallery.
+ */
+function theme_imagezoom_gallery($variables) {
+  $items = $variables['items'];
+
+  $output = theme('imagezoom_image', array(
+    'item' => $items[0],
+    'display_style' => $variables['display_style'],
+    'zoom_style' => $variables['zoom_style'],
+    'settings' => $variables['settings'],
+  ));
+
+  $output .= '<div id="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs">';
+  foreach ($items as $key => $item) {
+    $thumb = theme('imagezoom_thumb', array(
+      'item' => $item,
+      'thumb_style' => $variables['thumb_style'],
+      'zoom_style' => $variables['zoom_style'],
+      'settings' => $variables['settings'],
+    ));
+    $output .= '<li class="imagezoom-thumb">' . $thumb . '</li>';
+  }
+  $output .= '</ul></div>';
+
+  return $output;
+}
+
+/**
+ * Returns the HTML code for a gallery thumbnail.
+ */
+function theme_imagezoom_thumb($variables) {
+  $item = $variables['item'];
+
+  $image = array(
+    'path' => $item['uri'],
+  );
+
+  if (array_key_exists('alt', $item)) {
+    $image['alt'] = $item['alt'];
+  }
+
+  // Do not output an empty 'title' attribute.
+  if (drupal_strlen($item['title']) > 0) {
+    $image['title'] = $item['title'];
+  }
+
+  if (isset($item['width']) && isset($item['height'])) {
+    $image['width'] = $item['width'];
+    $image['height'] = $item['height'];
+  }
+
+  if ($variables['display_style']) {
+    $display_image = image_style_url($variables['display_style'], $item['uri']);
+  }
+  else {
+    $display_image = file_create_url($item['uri']);
+  }
+
+  if ($variables['zoom_style']) {
+    $zoom_image = image_style_url($variables['zoom_style'], $item['uri']);
+  }
+  else {
+    $zoom_image = file_create_url($item['uri']);
+  }
+
+  if ($variables['thumb_style']) {
+    $image['style_name'] = $variables['thumb_style'];
+    $thumb = theme('image_style', $image);
+  }
+  else {
+    $thumb = theme('image', $image);
+  }
+
+  $output = '<a href="#" data-image="' . $display_image . '" data-zoom-image="' . $zoom_image . '">' . $thumb . '</a>';
+
+  return $output;
+}
