@@ -126,6 +126,11 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
   $settings = array(
     'zoomType' => $display['settings']['imagezoom_zoom_type'],
   );
+  $context = array(
+    'field' => $field,
+    'instance' => $instance,
+  );
+  drupal_alter('imagezoom_settings', $settings, $context);
 
   $element = array();
   foreach ($items as $delta => $item) {
