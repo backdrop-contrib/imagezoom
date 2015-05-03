@@ -4,3 +4,4 @@ core = 7.x
 configure = admin/config/media/imagezoom
 
 dependencies[] = image
+dependencies[] = libraries
