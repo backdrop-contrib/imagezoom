@@ -67,6 +67,11 @@ function imagezoom_gallery_field_formatter_settings_summary($field, $instance, $
  * Implements hook_field_formatter_view().
  */
 function imagezoom_gallery_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  // If there are no items, don't do anything.
+  if (empty($items)) {
+    return array();
+  }
+
   $display_style = $display['settings']['imagezoom_display_style'];
   $zoom_style = $display['settings']['imagezoom_zoom_style'];
   $thumb_style = $display['settings']['imagezoom_thumb_style'];
