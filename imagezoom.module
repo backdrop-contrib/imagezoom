@@ -149,7 +149,7 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
 /**
  * Implements hook_theme().
  */
-function imagezoom_theme() {
+function imagezoom_theme($existing, $type, $theme, $path) {
   return array(
     'imagezoom_image' => array(
       'variables' => array(
@@ -158,14 +158,16 @@ function imagezoom_theme() {
         'zoom_style' => NULL,
         'settings' => NULL,
       ),
+      'template' => 'imagezoom_image',
+      'path' => $path . '/theme',
     ),
   );
 }
 
 /**
- * Returns the HTML code for an image with a zoomed version on mouseover.
+ * Preprocess function for imagezoom_image.
  */
-function theme_imagezoom_image($variables) {
+function template_preprocess_imagezoom_image(&$variables) {
   $library = libraries_load('elevatezoom');
   if (!$library['loaded']) {
     drupal_set_message($library['error message'], 'error');
@@ -175,46 +177,32 @@ function theme_imagezoom_image($variables) {
 
   $item = $variables['item'];
 
-  $image = array(
-    'path' => $item['uri'],
-  );
-
-  if (array_key_exists('alt', $item)) {
-    $image['alt'] = $item['alt'];
+  if ($variables['display_style']) {
+    $image_style = image_style_load($variables['display_style']);
+    $derivative_uri = image_style_path($variables['display_style'], $item['uri']);
+    image_style_create_derivative($image_style, $item['uri'], $derivative_uri);
+    $variables['image'] = image_style_url($variables['display_style'], $item['uri']);
+    $info = image_get_info($derivative_uri);
+  }
+  else {
+    $variables['image'] = file_create_url($item['uri']);
+    $info = image_get_info($item['uri']);
   }
 
-  // Do not output an empty 'title' attribute.
-  if (drupal_strlen($item['title']) > 0) {
-    $image['title'] = $item['title'];
-  }
-
-  if (isset($item['width']) && isset($item['height'])) {
-    $image['width'] = $item['width'];
-    $image['height'] = $item['height'];
-  }
+  $variables['width'] = $info['width'];
+  $variables['height'] = $info['height'];
+  $variables['alt'] = $item['alt'];
+  $variables['title'] = $item['title'];
 
   if ($variables['zoom_style']) {
     $image_style = image_style_load($variables['zoom_style']);
     $derivative_uri = image_style_path($variables['zoom_style'], $item['uri']);
     image_style_create_derivative($image_style, $item['uri'], $derivative_uri);
-    $zoom_image = image_style_url($variables['zoom_style'], $item['uri']);
+    $variables['zoom'] = image_style_url($variables['zoom_style'], $item['uri']);
   }
   else {
-    $zoom_image = file_create_url($item['uri']);
+    $variables['zoom'] = file_create_url($item['uri']);
   }
-
-  $image['attributes']['data-zoom-image'] = $zoom_image;
-  $image['attributes']['class'] = 'imagezoom-image';
-
-  if ($variables['display_style']) {
-    $image['style_name'] = $variables['display_style'];
-    $output = theme('image_style', $image);
-  }
-  else {
-    $output = theme('image', $image);
-  }
-
-  return $output;
 }
 
 /**

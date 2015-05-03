@@ -101,7 +101,7 @@ function imagezoom_gallery_field_formatter_view($entity_type, $entity, $field, $
 /**
  * Implements hook_theme().
  */
-function imagezoom_gallery_theme() {
+function imagezoom_gallery_theme($existing, $type, $theme, $path) {
   return array(
     'imagezoom_gallery' => array(
       'variables' => array(
@@ -110,7 +110,11 @@ function imagezoom_gallery_theme() {
         'zoom_style' => NULL,
         'thumb_style' => NULL,
         'settings' => NULL,
+        'image' => NULL,
+        'thumbs' => NULL,
       ),
+      'template' => 'imagezoom_gallery',
+      'path' => $path . '/theme',
     ),
     'imagezoom_thumb' => array(
       'variables' => array(
@@ -119,92 +123,77 @@ function imagezoom_gallery_theme() {
         'zoom_style' => NULL,
         'settings' => NULL,
       ),
+      'template' => 'imagezoom_thumb',
+      'path' => $path . '/theme',
     ),
   );
 }
 
 /**
- * Returns the HTML code for an Image Zoom gallery.
+ * Preprocess function for imagezoom_gallery.
  */
-function theme_imagezoom_gallery($variables) {
+function template_preprocess_imagezoom_gallery(&$variables) {
   $items = $variables['items'];
 
-  $output = theme('imagezoom_image', array(
+  $variables['image'] = theme('imagezoom_image', array(
     'item' => $items[0],
     'display_style' => $variables['display_style'],
     'zoom_style' => $variables['zoom_style'],
     'settings' => $variables['settings'],
   ));
 
-  $output .= '<div id="imagezoom-thumb-wrapper"><ul class="imagezoom-thumbs">';
+  $variables['thumbs'] = array();
   foreach ($items as $key => $item) {
-    $thumb = theme('imagezoom_thumb', array(
+    $variables['thumbs'][] = theme('imagezoom_thumb', array(
       'item' => $item,
       'display_style' => $variables['display_style'],
       'thumb_style' => $variables['thumb_style'],
       'zoom_style' => $variables['zoom_style'],
       'settings' => $variables['settings'],
     ));
-    $output .= '<li class="imagezoom-thumb">' . $thumb . '</li>';
   }
-  $output .= '</ul></div>';
-
-  return $output;
 }
 
 /**
- * Returns the HTML code for a gallery thumbnail.
+ * Preprocess function for imagezoom_thumb.
  */
-function theme_imagezoom_thumb($variables) {
+function template_preprocess_imagezoom_thumb(&$variables) {
   $item = $variables['item'];
-
-  $image = array(
-    'path' => $item['uri'],
-  );
-
-  if (array_key_exists('alt', $item)) {
-    $image['alt'] = $item['alt'];
-  }
-
-  // Do not output an empty 'title' attribute.
-  if (drupal_strlen($item['title']) > 0) {
-    $image['title'] = $item['title'];
-  }
-
-  if (isset($item['width']) && isset($item['height'])) {
-    $image['width'] = $item['width'];
-    $image['height'] = $item['height'];
-  }
 
   if ($variables['display_style']) {
     $image_style = image_style_load($variables['display_style']);
     $derivative_uri = image_style_path($variables['display_style'], $item['uri']);
     image_style_create_derivative($image_style, $item['uri'], $derivative_uri);
-    $display_image = image_style_url($variables['display_style'], $item['uri']);
+    $variables['image'] = image_style_url($variables['display_style'], $item['uri']);
+    $info = image_get_info($derivative_uri);
   }
   else {
-    $display_image = file_create_url($item['uri']);
+    $variables['image'] = file_create_url($item['uri']);
+    $info = image_get_info($item['uri']);
   }
 
   if ($variables['zoom_style']) {
     $image_style = image_style_load($variables['zoom_style']);
     $derivative_uri = image_style_path($variables['zoom_style'], $item['uri']);
     image_style_create_derivative($image_style, $item['uri'], $derivative_uri);
-    $zoom_image = image_style_url($variables['zoom_style'], $item['uri']);
+    $variables['zoom'] = image_style_url($variables['zoom_style'], $item['uri']);
   }
   else {
-    $zoom_image = file_create_url($item['uri']);
+    $variables['zoom'] = file_create_url($item['uri']);
   }
 
   if ($variables['thumb_style']) {
-    $image['style_name'] = $variables['thumb_style'];
-    $thumb = theme('image_style', $image);
+    $image_style = image_style_load($variables['thumb_style']);
+    $derivative_uri = image_style_path($variables['thumb_style'], $item['uri']);
+    image_style_create_derivative($image_style, $item['uri'], $derivative_uri);
+    $variables['thumb'] = image_style_url($variables['thumb_style'], $item['uri']);
+    $info = image_get_info($derivative_uri);
   }
   else {
-    $thumb = theme('image', $image);
+    $variables['thumb'] = file_create_url($item['uri']);
+    $info = image_get_info($item['uri']);
   }
 
-  $output = '<a href="#" data-image="' . $display_image . '" data-zoom-image="' . $zoom_image . '">' . $thumb . '</a>';
-
-  return $output;
+  $variables['width'] = $info['width'];
+  $variables['height'] = $info['height'];
 }
