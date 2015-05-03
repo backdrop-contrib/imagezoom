@@ -140,6 +140,7 @@ function theme_imagezoom_gallery($variables) {
   foreach ($items as $key => $item) {
     $thumb = theme('imagezoom_thumb', array(
       'item' => $item,
+      'display_style' => $variables['display_style'],
       'thumb_style' => $variables['thumb_style'],
       'zoom_style' => $variables['zoom_style'],
       'settings' => $variables['settings'],
