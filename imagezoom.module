@@ -46,6 +46,7 @@ function imagezoom_field_formatter_info() {
         'imagezoom_zoom_type' => '',
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
+        'imagezoom_additional' => '',
       ),
     ),
   );
@@ -82,6 +83,17 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
     '#options' => $image_styles,
     '#empty_option' => t('None (original image)'),
     '#default_value' => $settings['imagezoom_zoom_style'],
+  );
+
+  $element['imagezoom_additional'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Additional settings'),
+    '#default_value' => $settings['imagezoom_additional'],
+    '#description' => t('Add additional settings. For a list of available options, see the !docs. Settings should be added in the following format: <pre>@code</pre>', array(
+      '!docs' => l(t('documentation'), 'http://igorlino.github.io/elevatezoom-plus/api.htm'),
+      '@code' => 'option: value')
+    ),
+    '#weight' => 20,
   );
 
   return $element;
@@ -128,6 +140,9 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
   $settings = array(
     'zoomType' => $display['settings']['imagezoom_zoom_type'],
   );
+  $additonal_settings = imagezoom_settings_to_array($display['settings']['imagezoom_additional']);
+  $settings += $additonal_settings;
+
   $context = array(
     'field' => $field,
     'instance' => $instance,
@@ -212,4 +227,21 @@ function imagezoom_zoom_types() {
   );
 
   return $types;
+}
+
+/**
+ * Convert a settings string to an array.
+ */
+function imagezoom_settings_to_array($string) {
+  $array = explode("\n", $string);
+  $settings = array();
+
+  foreach ($array as $option) {
+    $parts = explode(':', $option);
+    $key = trim($parts[0]);
+    $value = trim($parts[1]);
+    $settings[$key] = $value;
+  }
+
+  return $settings;
 }

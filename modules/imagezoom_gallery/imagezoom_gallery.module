@@ -18,6 +18,7 @@ function imagezoom_gallery_field_formatter_info() {
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
         'imagezoom_thumb_style' => '',
+        'imagezoom_additional' => '',
       ),
     ),
   );
@@ -80,6 +81,9 @@ function imagezoom_gallery_field_formatter_view($entity_type, $entity, $field, $
     'zoomType' => $display['settings']['imagezoom_zoom_type'],
     'gallery' => 'imagezoom-thumb-wrapper',
   );
+  $additonal_settings = imagezoom_settings_to_array($display['settings']['imagezoom_additional']);
+  $settings += $additonal_settings;
+
   $context = array(
     'field' => $field,
     'instance' => $instance,
