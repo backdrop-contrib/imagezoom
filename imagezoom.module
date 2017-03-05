@@ -14,18 +14,20 @@
  * Implements hook_libraries_info().
  */
 function imagezoom_libraries_info() {
-  $libraries['elevatezoom'] = array(
-    'name' => 'Elevate Zoom',
-    'vendor url' => 'http://www.elevateweb.co.uk/image-zoom',
-    'download url' => 'http://www.elevateweb.co.uk/image-zoom/download',
+  $libraries['elevatezoom-plus'] = array(
+    'name' => 'elevateZoom Plus',
+    'vendor url' => 'http://igorlino.github.io/elevatezoom-plus/',
+    'download url' => 'https://github.com/igorlino/elevatezoom-plus',
     'version arguments' => array(
-      'file' => 'jquery.elevatezoom.js',
-      'pattern' => '@elevateZoom\s+([0-9\.]+)@',
-      'lines' => 2,
+      'file' => 'src/jquery.ez-plus.js',
+      'pattern' => '/jQuery ezPlus\s+([\d\.]+)/',
+      'lines' => 15,
       'cols' => 50,
     ),
     'files' => array(
-      'js' => array('jquery.elevatezoom.js'),
+      'js' => array(
+        'src/jquery.ez-plus.js',
+      ),
     ),
   );
 
@@ -168,7 +170,7 @@ function imagezoom_theme($existing, $type, $theme, $path) {
  * Preprocess function for imagezoom_image.
  */
 function template_preprocess_imagezoom_image(&$variables) {
-  $library = libraries_load('elevatezoom');
+  $library = libraries_load('elevatezoom-plus');
   if (!$library['loaded']) {
     drupal_set_message($library['error message'], 'error');
   }
