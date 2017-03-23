@@ -233,14 +233,17 @@ function imagezoom_zoom_types() {
  * Convert a settings string to an array.
  */
 function imagezoom_settings_to_array($string) {
-  $array = explode("\n", $string);
   $settings = array();
 
-  foreach ($array as $option) {
-    $parts = explode(':', $option);
-    $key = trim($parts[0]);
-    $value = trim($parts[1]);
-    $settings[$key] = $value;
+  if (!empty($string)) {
+    $array = explode("\n", $string);
+
+    foreach ($array as $option) {
+      $parts = explode(':', $option);
+      $key = trim($parts[0]);
+      $value = trim($parts[1]);
+      $settings[$key] = $value;
+    }
   }
 
   return $settings;
