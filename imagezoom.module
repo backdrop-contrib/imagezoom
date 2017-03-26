@@ -94,9 +94,25 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
       '@code' => 'option: value')
     ),
     '#weight' => 20,
+    '#element_validate' => array('imagezoom_imagezoom_additional_validate'),
   );
 
   return $element;
+}
+
+/**
+ * imagezoom_additional settings custom validation.
+ */
+function imagezoom_imagezoom_additional_validate($element, &$form_state) {
+  // Validate additional setting. Must be in specific format ex. option: value
+  $settings_array = explode("\n", $element['#value']);
+  foreach ($settings_array as $setting) {
+    if (!empty($setting)) {
+      if (!preg_match('/^[a-z][a-z0-9-_]*: ?[a-z][a-z0-9-_]*$/i', trim($setting))) {
+        form_set_error('imagezoom_additional', t('Additional settings must be in the format "option: value".'));
+      }
+    }
+  }
 }
 
 /**
@@ -240,9 +256,11 @@ function imagezoom_settings_to_array($string) {
 
     foreach ($array as $option) {
       $parts = explode(':', $option);
-      $key = trim($parts[0]);
-      $value = trim($parts[1]);
-      $settings[$key] = $value;
+      if (sizeof($parts) == 2) {
+        $key = trim($parts[0]);
+        $value = trim($parts[1]);
+        $settings[$key] = $value;
+      }
     }
   }
 
