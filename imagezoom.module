@@ -46,6 +46,8 @@ function imagezoom_field_formatter_info() {
         'imagezoom_zoom_type' => '',
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
+        'imagezoom_disable' => '',
+        'imagezoom_disable_width' => '',
         'imagezoom_additional' => '',
       ),
     ),
@@ -83,6 +85,28 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
     '#options' => $image_styles,
     '#empty_option' => t('None (original image)'),
     '#default_value' => $settings['imagezoom_zoom_style'],
+  );
+
+  $element['imagezoom_disable'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Disable zoom on small screens'),
+    '#return_value' => 1,
+    '#default_value' => $settings['imagezoom_disable'],
+  );
+
+  $element['imagezoom_disable_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Minimum width for zoom to display'),
+    '#default_value' => $settings['imagezoom_disable_width'],
+    '#size' => 5,
+    '#element_validate' => array('element_validate_integer'),
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="fields[field_image][settings_edit_form][settings][imagezoom_disable]"]' => array(
+          'checked' => FALSE,
+        ),
+      ),
+    ),
   );
 
   $element['imagezoom_additional'] = array(
@@ -156,6 +180,17 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
   $settings = array(
     'zoomType' => $display['settings']['imagezoom_zoom_type'],
   );
+
+  if ($display['settings']['imagezoom_disable']) {
+    $settings['responsive'] = TRUE;
+    $settings['respond'] = array(
+      array(
+        'range' => '0 - ' . $display['settings']['imagezoom_disable_width'],
+        'enabled' => FALSE,
+      ),
+    );
+  }
+
   $additonal_settings = imagezoom_settings_to_array($display['settings']['imagezoom_additional']);
   $settings += $additonal_settings;
 

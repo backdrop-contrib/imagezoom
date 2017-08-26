@@ -18,6 +18,8 @@ function imagezoom_gallery_field_formatter_info() {
         'imagezoom_display_style' => '',
         'imagezoom_zoom_style' => '',
         'imagezoom_thumb_style' => '',
+        'imagezoom_disable' => '',
+        'imagezoom_disable_width' => '',
         'imagezoom_additional' => '',
       ),
     ),
@@ -81,6 +83,17 @@ function imagezoom_gallery_field_formatter_view($entity_type, $entity, $field, $
     'zoomType' => $display['settings']['imagezoom_zoom_type'],
     'gallery' => 'imagezoom-thumb-wrapper',
   );
+
+  if ($display['settings']['imagezoom_disable']) {
+    $settings['responsive'] = TRUE;
+    $settings['respond'] = array(
+      array(
+        'range' => '0 - ' . $display['settings']['imagezoom_disable_width'],
+        'enabled' => FALSE,
+      ),
+    );
+  }
+
   $additonal_settings = imagezoom_settings_to_array($display['settings']['imagezoom_additional']);
   $settings += $additonal_settings;
 
