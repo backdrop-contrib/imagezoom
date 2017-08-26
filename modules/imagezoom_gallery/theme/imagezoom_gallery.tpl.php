@@ -13,9 +13,7 @@
 <?php print $image; ?>
 
 <div id="imagezoom-thumb-wrapper">
-  <ul class="imagezoom-thumbs">
-    <?php foreach ($thumbs as $thumb): ?>
-      <li class="imagezoom-thumb"><?php print $thumb; ?></li>
-    <?php endforeach; ?>
-  </ul>
+  <?php foreach ($thumbs as $thumb): ?>
+    <?php print $thumb; ?>
+  <?php endforeach; ?>
 </div>
