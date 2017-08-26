@@ -16,9 +16,9 @@ The elevatezoom jQuery plugin is used for the zoom effects.
 Install
 -------
 Install the module by following the instructions at http://drupal.org/node/70151.
-The elevatezoom jQuery plugin needs to be downloaded from
-http://www.elevateweb.co.uk/image-zoom. The downloaded folder should be renamed
-to elevatezoom and placed in your libraries folder.
+The elevateZoom Plus jQuery plugin needs to be downloaded from
+https://github.com/igorlino/elevatezoom-plus. The downloaded folder should be renamed
+to elevatezoom-plus and placed in your libraries folder.
 
 
 Configuration
