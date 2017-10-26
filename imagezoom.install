@@ -19,3 +19,30 @@ function imagezoom_uninstall() {
   variable_del('imagezoom_thumbs_jcarousel');
   variable_del('imagezoom_colorbox');
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function imagezoom_requirements($phase) {
+  $t = get_t();
+  $requirements = array(
+    'imagezoom' => array(
+      'title' => $t('Image Zoom'),
+    )
+  );
+
+  if ($phase == 'runtime') {
+    $library = libraries_detect('elevatezoom-plus');
+
+    if ($library['installed']) {
+      $requirements['imagezoom']['value'] = $t('The elevateZoom-Plus library was found.');
+      $requirements['imagezoom']['severity'] = REQUIREMENT_OK;
+    }
+    else {
+      $requirements['imagezoom']['value'] = $t('The elevateZoom-Plus library was not found.');
+      $requirements['imagezoom']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+
+  return $requirements;
+}
