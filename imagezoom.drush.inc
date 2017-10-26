@@ -6,6 +6,7 @@
  */
 
 define('IMAGEZOOM_DOWNLOAD_URI', 'https://github.com/igorlino/elevatezoom-plus/archive/master.zip');
+define('IMAGEZOOM_DOWNLOAD_PREFIX', 'elevatezoom-plus-');
 
 /**
  * Implements hook_drush_command().
@@ -39,53 +40,50 @@ function imagezoom_drush_help($section) {
  */
 function imagezoom_drush_download() {
   $args = func_get_args();
-  if ($args[0]) {
+  if (!empty($args[0])) {
     $path = $args[0];
   }
   else {
-    $path = drush_get_context('DRUSH_DRUPAL_ROOT') . '/sites/all/libraries/elevatezoom-plus';
+    $path = 'sites/all/libraries';
   }
 
-  drush_log(dt('Download destination path: "@path"', array('@path' => $path)), 'notice');
+  if (!is_dir($path)) {
+    drush_op('mkdir', $path);
+    drush_log(dt('Directory @path was created', array('@path' => $path)), 'notice');
+  }
 
-  $path_components = array_filter(explode('/', $path));
-  $subpath = '';
-  while (count($path_components) && $subpath .= '/' . array_shift($path_components)) {
-    if (!is_dir($subpath)) {
-      drush_op('mkdir', $subpath);
-      drush_log(dt('Directory @subpath was created', array('@subpath' => $subpath)), 'notice');
+  if (is_writable($path)) {
+    $olddir = getcwd();
+    chdir($path);
+
+    if ($filepath = drush_download_file(IMAGEZOOM_DOWNLOAD_URI)) {
+      $filename = basename($filepath);
+      $dirname = IMAGEZOOM_DOWNLOAD_PREFIX . basename($filepath, '.zip');
+
+      if (is_dir($dirname) || is_dir('elevatezoom-plus')) {
+        drush_delete_dir($dirname, TRUE);
+        drush_delete_dir('elevatezoom-plus', TRUE);
+        drush_log(dt('The existing elevateZoom-Plus library was deleted from @path', array('@path' => $path)), 'notice');
+      }
+
+      drush_tarball_extract($filename);
+
+      if ($dirname != 'elevatezoom-plus') {
+        drush_move_dir($dirname, 'elevatezoom-plus', TRUE);
+        $dirname = 'elevatezoom-plus';
+      }
     }
-  }
 
-  $olddir = getcwd();
-  chdir($path);
+    if (is_dir($dirname)) {
+      drush_log(dt('The elevateZoom-Plus library has been installed in @path', array('@path' => $path)), 'success');
+    }
+    else {
+      drush_log(dt('Drush was unable to install the elevateZoom-Plus library to @path', array('@path' => $path)), 'error');
+    }
 
-  $filename = basename(IMAGEZOOM_DOWNLOAD_URI);
-  $dirname = basename(IMAGEZOOM_DOWNLOAD_URI, '.zip');
-
-  if (is_dir($dirname)) {
-    drush_log(dt('The existing elevateZoom-Plus library at @path was overwritten.', array('@path' => $path)), 'notice');
-  }
-
-  if (is_file($filename)) {
-    drush_op('unlink', $filename);
-  }
-
-  if (!drush_shell_exec('wget ' . IMAGEZOOM_DOWNLOAD_URI)) {
-    drush_shell_exec('curl -O ' . IMAGEZOOM_DOWNLOAD_URI);
-  }
-
-  if (is_file($filename)) {
-    drush_shell_exec('unzip -qq -o ' . $filename);
-    drush_op('unlink', $filename);
-  }
-
-  chdir($olddir);
-
-  if (is_dir($path . '/' . $dirname)) {
-    drush_log(dt('Drush was unable to download the elevateZoom-Plus library to @path', array('@path' => $path)), 'error');
+    chdir($olddir);
   }
   else {
-    drush_log(dt('The elevateZoom-Plus library has been downloaded to @path', array('@path' => $path)), 'success');
+    drush_log(dt('Drush was unable to install the elevateZoom-Plus library because @path is not writable.', array('@path' => $path)), 'warning');
   }
 }
