@@ -132,7 +132,7 @@ function imagezoom_imagezoom_additional_validate($element, &$form_state) {
   $settings_array = explode("\n", $element['#value']);
   foreach ($settings_array as $setting) {
     if (!empty($setting)) {
-      if (!preg_match('/^[a-z][a-z0-9-_]*: ?[a-z][a-z0-9-_]*$/i', trim($setting))) {
+      if (!preg_match('/^[a-z][a-zA-Z0-9-_]*: ?[a-z0-9-_]*$/i', trim($setting))) {
         form_set_error('imagezoom_additional', t('Additional settings must be in the format "option: value".'));
       }
     }
