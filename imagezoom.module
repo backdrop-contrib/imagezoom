@@ -11,29 +11,32 @@
  */
 
 /**
- * Implements hook_libraries_info().
+ * Implements hook_library_info().
  */
-function imagezoom_libraries_info() {
+function imagezoom_library_info() {
+  $path = backdrop_get_path('module', 'imagezoom');
   $libraries['elevatezoom-plus'] = array(
     'name' => 'elevateZoom Plus',
     'vendor url' => 'http://igorlino.github.io/elevatezoom-plus/',
     'download url' => 'https://github.com/igorlino/elevatezoom-plus',
-    'version arguments' => array(
-      'file' => 'src/jquery.ez-plus.js',
-      'pattern' => '/jQuery ezPlus\s+([\d\.]+)/',
-      'lines' => 15,
-      'cols' => 50,
-    ),
-    'files' => array(
-      'js' => array(
-        'src/jquery.ez-plus.js',
-      ),
+    'js' => array(
+      $path . '/library/elevatezoom-plus/src/jquery.ez-plus.js' => array(),
     ),
   );
 
   return $libraries;
 }
-
+/**
+ * Implements hook_config_info().
+ */
+function imagezoom_config_info() {
+  return array(
+    'imagezoom.settings' => array(
+      'label' => t('Imagezoom settings'),
+      'group' => t('Configuration'),
+    ),
+  );
+}
 /**
  * Implements hook_field_formatter().
  */
@@ -115,7 +118,8 @@ function imagezoom_field_formatter_settings_form($field, $instance, $view_mode, 
     '#default_value' => $settings['imagezoom_additional'],
     '#description' => t('Add additional settings. For a list of available options, see the !docs. Settings should be added in the following format: <pre>@code</pre>', array(
       '!docs' => l(t('documentation'), 'http://igorlino.github.io/elevatezoom-plus/api.htm'),
-      '@code' => 'option: value')
+      '@code' => 'option: value',
+    )
     ),
     '#weight' => 20,
     '#element_validate' => array('imagezoom_imagezoom_additional_validate'),
@@ -132,7 +136,7 @@ function imagezoom_imagezoom_additional_validate($element, &$form_state) {
   $settings_array = explode("\n", $element['#value']);
   foreach ($settings_array as $setting) {
     if (!empty($setting)) {
-      if (!preg_match('/^[a-z][a-zA-Z0-9-_]*: ?[a-z0-9-_]*$/i', trim($setting))) {
+      if (!preg_match('/^[a-z][a-z0-9-_]*: ?[a-z][a-z0-9-_]*$/i', trim($setting))) {
         form_set_error('imagezoom_additional', t('Additional settings must be in the format "option: value".'));
       }
     }
@@ -198,7 +202,7 @@ function imagezoom_field_formatter_view($entity_type, $entity, $field, $instance
     'field' => $field,
     'instance' => $instance,
   );
-  drupal_alter('imagezoom_settings', $settings, $context);
+  backdrop_alter('imagezoom_settings', $settings, $context);
 
   $element = array();
   foreach ($items as $delta => $item) {
@@ -236,12 +240,10 @@ function imagezoom_theme($existing, $type, $theme, $path) {
  * Preprocess function for imagezoom_image.
  */
 function template_preprocess_imagezoom_image(&$variables) {
-  $library = libraries_load('elevatezoom-plus');
-  if (!$library['loaded']) {
-    drupal_set_message($library['error message'], 'error');
-  }
-  drupal_add_js(array('imagezoom' => $variables['settings']), 'setting');
-  drupal_add_js(drupal_get_path('module', 'imagezoom') . '/js/imagezoom.js');
+  backdrop_add_library('imagezoom', 'elevatezoom-plus');
+  backdrop_add_js(array('imagezoom' => $variables['settings']), 'setting');
+  backdrop_add_js(backdrop_get_path('module', 'imagezoom') . '/js/imagezoom.js');
+
 
   $item = $variables['item'];
 

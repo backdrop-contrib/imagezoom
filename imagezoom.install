@@ -10,39 +10,12 @@
  */
 function imagezoom_uninstall() {
   // delete variables created by settings form
-  variable_del('imagezoom_zoom_type');
-  variable_del('imagezoom_multiple_thumbs');
-  variable_del('imagezoom_hide_active_thumb');
-  variable_del('imagezoom_display_title');
-  variable_del('imagezoom_load_all');
-  variable_del('imagezoom_load_all_types');
-  variable_del('imagezoom_thumbs_jcarousel');
-  variable_del('imagezoom_colorbox');
-}
-
-/**
- * Implements hook_requirements().
- */
-function imagezoom_requirements($phase) {
-  $t = get_t();
-  $requirements = array(
-    'imagezoom' => array(
-      'title' => $t('Image Zoom'),
-    )
-  );
-
-  if ($phase == 'runtime') {
-    $library = libraries_detect('elevatezoom-plus');
-
-    if ($library['installed']) {
-      $requirements['imagezoom']['value'] = $t('The elevateZoom-Plus library was found.');
-      $requirements['imagezoom']['severity'] = REQUIREMENT_OK;
-    }
-    else {
-      $requirements['imagezoom']['value'] = $t('The elevateZoom-Plus library was not found.');
-      $requirements['imagezoom']['severity'] = REQUIREMENT_ERROR;
-    }
-  }
-
-  return $requirements;
+  config_clear('imagezoom.settings', 'imagezoom_zoom_type');
+  config_clear('imagezoom.settings', 'imagezoom_multiple_thumbs');
+  config_clear('imagezoom.settings', 'imagezoom_hide_active_thumb');
+  config_clear('imagezoom.settings', 'imagezoom_display_title');
+  config_clear('imagezoom.settings', 'imagezoom_load_all');
+  config_clear('imagezoom.settings', 'imagezoom_load_all_types');
+  config_clear('imagezoom.settings', 'imagezoom_thumbs_jcarousel');
+  config_clear('imagezoom.settings', 'imagezoom_colorbox');
 }

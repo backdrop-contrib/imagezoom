@@ -101,7 +101,7 @@ function imagezoom_gallery_field_formatter_view($entity_type, $entity, $field, $
     'field' => $field,
     'instance' => $instance,
   );
-  drupal_alter('imagezoom_settings', $settings, $context);
+  backdrop_alter('imagezoom_settings', $settings, $context);
 
   $element = array(
     '#theme' => 'imagezoom_gallery',

@@ -8,7 +8,7 @@
 /**
  * Change settings for the elevatezoom plugin.
  *
- * For all available settings, see http://igorlino.github.io/elevatezoom-plus/api.htm.
+ * For all available settings, see http://www.elevateweb.co.uk/image-zoom/configuration
  *
  * @param array $settings
  *   A array of settings keyed by the setting name.

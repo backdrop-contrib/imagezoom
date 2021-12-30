@@ -1,6 +1,9 @@
 name = Image Zoom Gallery
 description = Provides a gallery formatter for the Image Zoom module.
-core = 7.x
+package = Image
+backdrop = 1.x
+type = module
 
 dependencies[] = imagezoom
-dependencies[] = jquery_update
+
+
